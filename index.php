@@ -4,14 +4,17 @@
 <head>
 	<title>Yearclock</title>
 	<meta charset="utf-8">
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
-	 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+	<link href='style.css' rel='stylesheet' type='text/css'>
+	<script src="clock.js"></script>
+	<?php require('getEvents.php'); ?>
 	<script>
 	$(function() {
-		if(!Modernizr.inputtypes.date) {
-			console.log("The 'date' input type is not supported, so using JQueryUI datepicker instead.");
+//		if(!Modernizr.inputtypes.date) {
+//			console.log("The 'date' input type is not supported by your browser. Using JQueryUI datepicker instead.");
 			$( "#start" ).datepicker({
 			  altField: "#startAlt",
 			  altFormat: "yy-mm-dd"
@@ -20,118 +23,9 @@
 			  altField: "#endAlt",
 			  altFormat: "yy-mm-dd"
 			});
-		}
+//		}
 	});
 	</script>
-	<style>
-	body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em;}
-	svg {display: block; position: fixed;}
-	.monthLabel {
-		font-family: 'Open Sans',sans-serif;
-		fill: #000;
-		font-weight: 500;
-		opacity: 0.3;
-	}
-	.day { stroke: black; opacity: 0.6; }
-	.arm { stroke: black; stroke-width: 2; }
-	.centerDot { fill: black; }
-	.eventLine { stroke: black; stroke-width: 2; }
-	.eventName { font-family: 'Open Sans',sans-serif; font-weight: 400; }
-	
-	.menuContainer {
-		position: fixed;
-		top: 1.25em;
-		left: 1.25em;
-		font-family: 'Open Sans',sans-serif;
-		font-size: 1.2em;
-		font-weight: 300;
-		color: white;
-		background-color: black;
-		border-radius: 10px;
-		font-weight: 400;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
-	.menuButton {
-		position: relative;
-		padding-left: 1.5em;
-		padding-right: 8px;
-		cursor: pointer;
-	}
-	.menuButton:before {
-		content: "+";
-		position: absolute;
-		font-weight: 400;
-		font-size: 2em;
-		line-height: 0.5em;
-		left: 5px;
-		top: 3px;
-	}
-	.menuButtonPlus {
-		position: absolute;
-		font-weight: 400;
-		font-size: 2em;
-		line-height: 50%;
-	}
-	
-//	hamburger menu icon
-//	.menuButton:before {
-//		content: "";
-//		position: absolute;
-//		left: 8px;
-//		top: 8px;
-//		width: 17px;
-//		height: 2px;
-//		background: white;
-//		box-shadow:
-//			0 5px 0 0 white,
-//			0 10px 0 0 white;
-//	}
-
-	.insertFormHidden {
-		display: none;
-	}
-	.insertFormShown {
-		display: block;
-	}
-	#addEventForm label {
-		float: left;
-		padding-right: 5px;
-		text-align: left;
-	}
-	#addEventForm input {
-		float: right;
-	}
-	#addEventForm {
-		padding: 5px 5px 5px 30px;
-	}
-	#addEventSubmit {
-		color: black;
-		border-radius: 5px;
-		width: 6em;
-		text-align: center;
-		margin-bottom: 5px;
-		margin-top: 5px;
-	}
-	.submitIdle {
-		cursor: pointer;
-		display: block;
-		background-color: #DDD;
-	}
-	.submitIdle:hover {
-		background-color: #AAA;
-	};
-	.submitIdle:active {
-		background-color: #666;
-	};
-	.submitWorking {
-		cursor: default;
-	}
-	</style>
 	<script>
 	/* Modernizr 2.8.3 (Custom Build) | MIT & BSD
 	 * Build: http://modernizr.com/download/#-inputtypes-shiv-cssclasses-load
@@ -141,470 +35,71 @@
 </head>
 <body>
 
-<svg id="mySVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
-	<defs id="myDefs">
+<svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
+	<defs id="defs">
 	</defs>
 </svg>
 
+<script>
+	// get events array from JSON object created by getEvents.php
+	var events = JSON.parse( '<?php echo json_encode($data) ?>' );
+	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
+</script>
+
+<!-- The 'add event' form -->
 <div class="menuContainer" id="menuContainer">
 <div class="menuButton" onClick="menuClick()">Add event</div>
 	<form class="insertFormHidden" id="addEventForm" onSubmit="addEvent();return false">
-		<label for="name">Name</label>
-		<input type="text" name="name" id="name" required/>
+		<input type="text" name="name" id="name" autocomplete="off" placeholder="Event name" required/>
 		<br/>
-		<label for="start">Start</label>
-		<input type="date" name="start" id="start" class="datepicker" required/>
+		<input type="text" name="start" id="start" class="datepicker" autocomplete="off" placeholder="Start date"  required/>
 		<input type="hidden" name="startAlt" id="startAlt"/>
 		<br/>
-		<label for="end">End</label>
-		<input type="date" name="end" id="end" class="datepicker" required/>
+		<input type="text" name="end" id="end" class="datepicker" autocomplete="off" placeholder="End date" required/>
 		<input type="hidden" name="endalt" id="endAlt"/>
 		<br/>
-		<button type="submit" id="addEventSubmit" class="submitIdle">Submit</button>
+		<input type="submit" id="addEventSubmit" class="submitIdle"></input>
 	</form>
 </div>
-<script>
-function menuClick() {
-	var form = document.getElementById("addEventForm");
-	if (form.className == "insertFormHidden") {
-		form.className = "insertFormShown";
-	} else if (form.className == "insertFormShown") {
-		form.className = "insertFormHidden";
-	};
-};
-
-function addEvent() {
-	var name = document.getElementById('name').value;
-	if(!Modernizr.inputtypes.date) {
-		var start = document.getElementById('startAlt').value;
-		var end = document.getElementById('endAlt').value;
-	} else {
-		var start = document.getElementById('start').value;
-		var end = document.getElementById('end').value;
-	};
-
-    var xmlhttp= window.XMLHttpRequest ?
-        new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	
-	document.getElementById("addEventSubmit").innerText = "Working...";
-	
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-            alert(xmlhttp.responseText); // Here is the response
-			document.getElementById("addEventSubmit").innerText = "Submit";
-    }
-
-    xmlhttp.open("POST","insertEvent.php",true);
-	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("name=" + name + "&start=" + start + "&end=" + end);
-};
-</script>
-
-<?php
-$con=mysqli_connect("localhost:3306","root","","yearclock");
-// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-$result1 = mysqli_query($con,"SELECT * FROM events WHERE end < '2014-10-01' AND end >= '2014-07-01' ORDER BY start DESC ");
-$result2 = mysqli_query($con,"SELECT * FROM events WHERE end < '2014-07-01' AND end >= '2014-04-01' ORDER BY start ASC ");
-$result3 = mysqli_query($con,"SELECT * FROM events WHERE end < '2015-01-01' AND end >= '2014-10-01' ORDER BY start ASC ");
-$result4 = mysqli_query($con,"SELECT * FROM events WHERE end < '2014-4-01' AND end >= '2014-01-01' ORDER BY start DESC ");
-
-$data = array();
-while($row = mysqli_fetch_array($result1)) {
-	$data[] = addToArray($row);
-};
-while($row = mysqli_fetch_array($result2)) {
-	$data[] = addToArray($row);
-};
-while($row = mysqli_fetch_array($result3)) {
-	$data[] = addToArray($row);
-};
-while($row = mysqli_fetch_array($result4)) {
-	$data[] = addToArray($row);
-};
-
-function addToArray($row) {
-	preg_match('/(\d{4})-(\d{2})-(\d{2})/',$row['start'], $startMatches);
-	preg_match('/(\d{4})-(\d{2})-(\d{2})/',$row['end'], $endMatches);
-	$entry = array(
-		"id" => $row['id'],
-		"name" => $row['name'],
-		"start" => array(
-			"year" => (int) $startMatches[1],
-			"month" => (int) $startMatches[2], 
-			"day" => (int) $startMatches[3]),
-		"end" => array(
-			"year" => (int) $endMatches[1],
-			"month" => (int) $endMatches[2], 
-			"day" => (int) $endMatches[3])
-	);
-	return $entry;
-};
-
-mysqli_close($con);
-?>
 
 <script>
-var events = JSON.parse( '<?php echo json_encode($data) ?>' );
-console.log(events);
-/*
-window.onresize=function() {
-	drawClock();
-};
-*/
+	// set 'add event' div background color to this month's color
+	document.getElementById('menuContainer').setAttribute('style', 'background-color: ' + style.month.colors2[new Date().getMonth()] + ';');
 
-var dontLookBack = true;
-
-////////////////////
-// CALENDAR STUFF //
-////////////////////
-
-// get today's date
-var date = new Date();
-
-// these are labels for the days of the week
-daysLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-// these are human-readable month name labels, in order
-monthsLabels = ['January', 'February', 'March', 'April',
-                     'May', 'June', 'July', 'August', 'September',
-                     'October', 'November', 'December'];
-// these are the days of the week for each month, in order
-daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-daysInYear = 365;
-
-// check for leap year
-if ((date.year % 4 == 0 && date.year % 100 != 0) || date.year % 400 == 0){
-	daysInYear = 366;
-	daysInMonth[1] = 29;
-}
-
-// calculate how far along in the year we are
-var dayNumber = 0;
-for (var i=0; i < date.getMonth(); i++) {
-	dayNumber += daysInMonth[i];
-};
-dayNumber += date.getDate();
-var progress = (dayNumber - 0.5) / daysInYear;
-
-/////////////////////
-// DRAW EVERYTHING //
-/////////////////////
-// draw order defines layering
-	
-	// clock styling
-	var yearStartOffset = -.5*Math.PI;
-	
-/*	var monthMarkColor = "white";
-	var monthMarkThickness = 2;
-	var monthMarkLength = .1; // relative to clockRadius
-	var newYearsMarkColor = "black";
-	var newYearsMarkThickness = 4;
-	var newYearsMarkLength = 0.2;
-*/
-	var arm = {
-		color: "black",
-		thickness: 2,
-		length: 1.02, // relative to clockRadius
-	};
-	var yearIndicator = {
-		fontSize: 0.25, // relative to clockRadius
-		color: "#DDDDDD",
-	};
-	var outline = {
-		color: "black",
-		thickness: 5,
-		margin: 30, // margin from the edge of the window, this is used to calculate the clockRadius of the clock
-	};
-	var month = {
-		thickness: .16, // relative to clockRadius
-		margin: 0, // visual separation between months (in days)
-		overlap: 2, // overlap to prevent white lines between months (in days)
-		fontSize: 0.08,// month label font size relative to clockRadius
-		colors: ["#79becf", "#5eb69c", "#52ad46",	// color per month
-				"#aec011", "#f2c313", "#f18f15",	// inspired by Andy Brice
-				"#e54322", "#982c1c", "#894a3c",	// http://andybrice.net/blog/2010/01/30/year-clock/
-				"#7d5e57", "#6f6c6d", "#738c91"],
-		colors2: ["#85ADAD", "#83E6FF", "#66FF99",	
-				"#66FF33", "#33CC33","#FFFF19",
-				"#FFD915", "#FF730B","#FF1919", 
-				"#B82E00", "#873E19", "#334C4C"],
-	};
-	var day = {
-		thickness: 0.006, // relative to clockRadius
-		length: 0.03, // relative to clockRadius
-		color: "white",
-	};
-
-var svgNS = "http://www.w3.org/2000/svg";
-var xlinkNS = "http://www.w3.org/1999/xlink";
-var svg = document.getElementById("mySVG");
-var def = document.getElementById("myDefs");
-
-svg.setAttribute("width",window.innerWidth);
-svg.setAttribute("height",window.innerHeight);
-svg.setAttribute("viewBox", ""+0+" "+0+" "+window.innerWidth+" "+window.innerHeight+"");
-
-var centerX = window.innerWidth/2;
-var centerY = window.innerHeight/2;
-var clockRadius = Math.min(window.innerWidth,window.innerHeight)/2 - outline.margin*2;
-/*
-var path = document.createElementNS(svgNS,"path");
-path.setAttribute("id","monthLabelPath");
-var startX = centerX + clockRadius * 0.85 * Math.cos(0*2*Math.PI + yearStartOffset);
-var startY = centerY + clockRadius * 0.85 * Math.sin(0*2*Math.PI + yearStartOffset);
-var endX = centerX + clockRadius * 0.85 * Math.cos(0.9*2*Math.PI + yearStartOffset);
-var endY = centerY + clockRadius * 0.85 * Math.sin(0.9*2*Math.PI + yearStartOffset);
-path.setAttribute("d","M"+startX+" "+startY+" A"+clockRadius * 0.85+" "+clockRadius * 0.85+" 0 1 1 "+endX+" "+endY+"");
-document.getElementById("myDefs").appendChild(path);
-path.setAttribute("style","stroke-width: 2; fill: none; stroke: black;");
-svg.appendChild(path);
-*/
-function drawClock() {
-//	svg.setAttribute("width",window.innerWidth);
-//	svg.setAttribute("height",window.innerHeight);
-	
-	// draw months
-	var beginDay = 0;
-	var thicknessAbs = month.thickness * clockRadius;
-	for (var i=0; i < 12; i++) {
-		var endDay = beginDay + daysInMonth[i];
-		var begin = (beginDay + month.margin/2) / daysInYear;
-		var end = (endDay - month.margin/2) / daysInYear;
-		var arc = drawSVGarc(centerX,centerY,clockRadius,begin,end,"fill: none; stroke: "+month.colors2[i]+";",thicknessAbs,"month");
-		//		var arc.setAttribute("fill","url(#grad1)");
-		svg.appendChild(arc);
-//		var color = hslToRgb(1-(i/12-0.5),1,0.5);
-//		drawSVGarc(centerX,centerY,clockRadius,begin,end,"fill: none; stroke: rgb("+Math.round(color[0])+","+Math.round(color[1])+","+Math.round(color[2])+");",thicknessAbs,"month");
-		// draw month labels
-		createDefPath(centerX,centerY,clockRadius*(1-month.thickness+0.03),begin,end,monthsLabels[i]); // create path for label to follow, so that it curves with the clock
-//		var x = centerX + Math.cos(yearStartOffset) * clockRadius * 0.85;
-//		var y = centerY + Math.sin(yearStartOffset) * clockRadius * 0.85;
-		var text = drawSVGtext(0,0,"","white","middle","monthLabel"); // create the text element
-		text.setAttribute("style", "font-size: "+month.fontSize*clockRadius+";"); // set font size relative to clockRadius
-/*
-		if (0.75 > (begin+end)/2 && (begin+end)/2 > 0.25) {
-			var rotate = "rotate(180 "+centerX+","+centerY+") rotate("+((begin+end)/2-0.5)*360+" "+centerX+","+centerY+")";
-		} else {
-			var rotate = "rotate("+(begin+end)/2*360+" "+centerX+","+centerY+")";
+	function menuClick() { // toggles the 'add event' form to show or hide
+		var form = document.getElementById("addEventForm");
+		if (form.className == "insertFormHidden") {
+			form.className = "insertFormShown";
+		} else if (form.className == "insertFormShown") {
+			form.className = "insertFormHidden";
 		};
-		text.setAttribute("transform", rotate);
-*/
+	};
+
+	function addEvent() {
+		var name = document.getElementById('name').value;
+		if(!Modernizr.inputtypes.date) {
+			var start = document.getElementById('startAlt').value;
+			var end = document.getElementById('endAlt').value;
+		} else {
+			var start = document.getElementById('start').value;
+			var end = document.getElementById('end').value;
+		};
+
+		var xmlhttp= window.XMLHttpRequest ?
+			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		
-		var textPath = document.createElementNS(svgNS,"textPath"); // append link to path created earlier
-		textPath.setAttributeNS(xlinkNS, "href", "#"+monthsLabels[i]);
-		textPath.setAttribute("startOffset","50%");
-		textPath.textContent = monthsLabels[i];
-		text.appendChild(textPath);
+		document.getElementById("addEventSubmit").innerText = "Working...";
+		
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+				alert(xmlhttp.responseText); // Here is the response
+				document.getElementById("addEventSubmit").innerText = "Submit";
+		}
 
-		svg.appendChild(text);
-		beginDay = endDay;
-	};
-	// draw day marks
-	for (var i=0; i < daysInYear; i++) {
-		var progressTmp = (i-0.5) / daysInYear;
-		var length = ((i-4) % 7 == 0 || (i-4) % 7 == 1) ? 2*day.length : day.length;
-		var startX = centerX + Math.cos(progressTmp * 2*Math.PI+yearStartOffset) * (1-length) * (clockRadius-outline.thickness/2);
-		var startY = centerY + Math.sin(progressTmp * 2*Math.PI+yearStartOffset) * (1-length) * (clockRadius-outline.thickness/2);
-		var endX = centerX + Math.cos(progressTmp * 2*Math.PI+yearStartOffset) * clockRadius;
-		var endY = centerY + Math.sin(progressTmp * 2*Math.PI+yearStartOffset) * clockRadius;
-		drawSVGline(startX,startY,endX,endY,"day","stroke-width: "+day.thickness * clockRadius+";");
-	};
-	// draw arm
-	var startX = centerX - Math.cos(progress*2*Math.PI+yearStartOffset) * arm.length * 0.1 * clockRadius;
-	var startY = centerY - Math.sin(progress*2*Math.PI+yearStartOffset) * arm.length * 0.1 * clockRadius;
-	var adjustLength;
-	if (date.getDay() == '0' || date.getDay() == '6') {
-		adjustLength = 2*day.length - 0.04;
-	} else {
-		adjustLength = day.length - 0.04;
-	};
-	var endX = centerX + Math.cos(progress*2*Math.PI+yearStartOffset) * arm.length * clockRadius * (1 - day.length - 0.04);
-	var endY = centerY + Math.sin(progress*2*Math.PI+yearStartOffset) * arm.length * clockRadius * (1 - day.length - 0.04);
-	drawSVGline(startX,startY,endX,endY,"arm");
-	// draw center dot
-	var circle = document.createElementNS(svgNS,"circle");
-	circle.setAttribute("cx",centerX);
-	circle.setAttribute("cy",centerY);
-	circle.setAttribute("r",clockRadius*0.03);
-	circle.setAttribute("class","centerDot");
-	svg.appendChild(circle);
+		xmlhttp.open("POST","insertEvent.php",true);
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send("name=" + name + "&start=" + start + "&end=" + end);
 };
-var march31Y = centerY + Math.sin(convertToProgress(3,31)*2*Math.PI+yearStartOffset) * clockRadius; // for bounding box purposes
-var octorber1Y = centerY + Math.sin(convertToProgress(10,1)*2*Math.PI+yearStartOffset) * clockRadius;
-function drawEvents() {
-	for (i=0; i < events.length; i++) {
-		var progressStart = convertToProgress(events[i].start.month, events[i].start.day); // subtract one from the month because computers count from zero, so January is the 0th month
-		var progressEnd = convertToProgress(events[i].end.month, events[i].end.day);
-		if (dontLookBack && progressEnd < progress) {
-			continue;
-		};
-		if (progressEnd == progressStart) {// check if it's 1 day or multiple day event
-			// 1 day event
-			progressTmp = progressStart;
-		} else {
-			// multiple day event
-			progressStart -= 0.25/daysInYear;
-			progressEnd += 0.25/daysInYear;
-			// draw segment
-			var arc = drawSVGarc(centerX,centerY,clockRadius*1.01,progressStart,progressEnd,"fill: none; stroke: black;",2);
-			svg.appendChild(arc);
-			var progressTmp = (progressStart+progressEnd)/2;
-		};
-		// calculate line start and end points
-		var startX = centerX + Math.cos(progressTmp*2*Math.PI+yearStartOffset) * clockRadius * 1.01;
-		var startY = centerY + Math.sin(progressTmp*2*Math.PI+yearStartOffset) * clockRadius * 1.01;
-		var endX = centerX + Math.cos(progressTmp*2*Math.PI+yearStartOffset) * clockRadius * 1.05;
-		var endY = centerY + Math.sin(progressTmp*2*Math.PI+yearStartOffset) * clockRadius * 1.05;
-		// draw text
-		var x = endX;
-		var y = endY + 5 + 10 * (-Math.cos(progressTmp*2*Math.PI));
-		var anchor = (progressTmp > 0.5) ? "end" : "start";
-		var text = drawSVGtext(x,y,events[i].name,"black",anchor,"eventName");
-		svg.appendChild(text);
-		var BBox = text.getBBox();
-		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER FROM SQL QUERY
-			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-			if (events[i].start.month <= 3 || events[i].start.month >= 10) { // check if event sits in upper half of clock
-				if (events[i].start.month <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
-					if (BBox.y + BBox.height > march31Y) {
-						var dY = Math.abs(BBox.y + BBox.height - march31Y);
-						endY -= dY;
-						text.setAttribute("y",y-dY);
-						BBox.y -= dY;
-						};
-				}
-				else if (BBox.y + BBox.height > octorber1Y) { // if in upper left half, make sure it doesn't overlap with events in the lower left quarter around the september-october border
-					var dY = Math.abs(BBox.y + BBox.height - octorber1Y);
-					endY -= dY;
-					text.setAttribute("y",y-dY);
-					BBox.y -= dY;
-				};
-				if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
-					var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
-					endY -= dY;
-					text.setAttribute("y",y-dY);
-					BBox.y -= dY;
-				};
-			} // end upper half check
-			else if (events[i].start.month <= 9 && events[i].start.month >= 4 // if event sits in lower half
-					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
-				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
-				endY += dY;
-				text.setAttribute("y",y+dY);
-				BBox.y += dY;
-			};
-		};
-		drawSVGline(startX,startY,endX,endY,"eventLine");
-		events[i].BBox = BBox;
-	};
-};
-////////////////////
-// help functions //
-////////////////////
-
-function drawSVGarc(centerx,centery,radius,start,end,style,strokeWidth,classAttribute,fill) {
-	radius = radius - strokeWidth/2;
-	var startX = centerx + radius * Math.cos(start*2*Math.PI + yearStartOffset);
-	var startY = centery + radius * Math.sin(start*2*Math.PI + yearStartOffset);
-	var endX = centerx + radius * Math.cos(end*2*Math.PI + yearStartOffset);
-	var endY = centery + radius * Math.sin(end*2*Math.PI + yearStartOffset);
-	var largeArcFlag = ((end-start) >= 0.5) ? 1 : 0 ;
-	var path = document.createElementNS(svgNS,"path");
-	path.setAttribute("d","M"+startX+" "+startY+" A"+radius+" "+radius+" 0 "+largeArcFlag+" 1 "+endX+" "+endY+"");
-	path.setAttribute("style",style+" stroke-width: "+strokeWidth);
-	path.setAttribute("class",classAttribute);
-	path.setAttribute("fill","url(#"+fill+")");
-	return path;
-};
-
-function createDefPath(centerx,centery,radius,start,end,id) {
-	var startX = centerx + radius * Math.cos(start*2*Math.PI + yearStartOffset);
-	var startY = centery + radius * Math.sin(start*2*Math.PI + yearStartOffset);
-	var endX = centerx + radius * Math.cos(end*2*Math.PI + yearStartOffset);
-	var endY = centery + radius * Math.sin(end*2*Math.PI + yearStartOffset);
-	var largeArcFlag = ((end-start) >= 0.5) ? 1 : 0 ;
-	var path = document.createElementNS(svgNS,"path");
-	path.setAttribute("d","M"+startX+" "+startY+" A"+radius+" "+radius+" 0 "+largeArcFlag+" 1 "+endX+" "+endY+"");
-	path.setAttribute("id",id);
-	def.appendChild(path);
-};
-
-function drawSVGline(startX,startY,endX,endY,classAttribute,style) {
-	var line = document.createElementNS(svgNS,"line");
-	line.setAttribute("x1",startX);
-	line.setAttribute("y1",startY);
-	line.setAttribute("x2",endX);
-	line.setAttribute("y2",endY);
-	line.setAttribute("class",classAttribute);
-	line.setAttribute("style",style);
-	svg.appendChild(line);
-};
-
-function drawSVGtext(x,y,content,color,anchor,classAttribute) {
-	var text = document.createElementNS(svgNS,"text");
-	text.setAttribute("x",x);
-	text.setAttribute("y",y);
-//	text.setAttribute("fill",color);
-	text.setAttribute("text-anchor",anchor);
-	text.setAttribute("class",classAttribute);
-	text.textContent = content;
-//	svg.appendChild(text);
-	return text;
-};
-
-function convertToProgress(month,day) {
-	// convert date to progress in the year
-	month -= 1;
-	var dayAbs = day;
-	for (var i=0; i < month; i++) {
-		dayAbs += daysInMonth[i];
-	};
-	var progress = (dayAbs-0.5) / daysInYear;
-	return progress;
-};
-
-/**
- * By mjijackson (I think?) Source: http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
- * Converts an HSL color value to RGB. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes h, s, and l are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  l       The lightness
- * @return  Array           The RGB representation
- */
-function hslToRgb(h, s, l){
-    var r, g, b;
-
-    if(s == 0){
-        r = g = b = l; // achromatic
-    }else{
-        function hue2rgb(p, q, t){
-            if(t < 0) t += 1;
-            if(t > 1) t -= 1;
-            if(t < 1/6) return p + (q - p) * 6 * t;
-            if(t < 1/2) return q;
-            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        }
-
-        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
-    }
-
-    return [r * 255, g * 255, b * 255];
-}
-
-drawClock();
-drawEvents();
 </script>
 </body>
 </html>

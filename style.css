@@ -1,0 +1,114 @@
+body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em;}
+svg {display: block; position: fixed;}
+.monthLabel {
+	font-family: 'Open Sans',sans-serif;
+	fill: #000;
+	font-weight: 500;
+	opacity: 0.3;
+}
+.day { stroke: black; opacity: 0.6; }
+.arm { stroke: black; stroke-width: 2; }
+.centerDot { fill: black; }
+.eventLine { stroke: black; stroke-width: 2; }
+.eventName { font-family: 'Open Sans',sans-serif; font-weight: 400; }
+
+.menuContainer {
+	position: fixed;
+	top: 1.25em;
+	left: 1.25em;
+	font-family: 'Open Sans',sans-serif;
+	font-size: 1em;
+	font-weight: 300;
+	color: black;
+	background-color: #CCC;
+	border-radius: 6px;
+	font-weight: 400;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.menuButton {
+	position: relative;
+	padding: 10px;
+	cursor: pointer;
+	font-weight: 500;
+}
+.menuButton:before {
+	content: "";
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-right: 0.3em;
+	vertical-align: middle;
+	border-top: 0.5em solid black;
+	border-left: 0.5em solid transparent;
+	border-right: 0.5em solid transparent;
+}
+/*
+.menuButton:before {
+	content: "v";
+	position: absolute;
+	font-weight: 400;
+	font-size: 1.5em;
+	line-height: 0.7em;
+	left: 5px;
+	top: 3px;
+}
+*/
+
+//	hamburger menu icon
+//	.menuButton:before {
+//		content: "";
+//		position: absolute;
+//		left: 8px;
+//		top: 8px;
+//		width: 17px;
+//		height: 2px;
+//		background: white;
+//		box-shadow:
+//			0 5px 0 0 white,
+//			0 10px 0 0 white;
+//	}
+
+.insertFormHidden {
+	display: none;
+}
+.insertFormShown {
+	display: block;
+}
+#addEventForm {
+	padding: 0px 15px 15px 15px;
+	width: 200px;
+}
+#addEventForm input {
+	padding: 4px;
+	border-radius: 3px;
+	border: none;
+	margin-top: 10px;
+	width: 100%;
+	box-sizing: border-box;
+}
+#addEventSubmit {
+	background-color: white;
+	background-image: linear-gradient(#FFF, #AAA);
+}
+.ui-widget {
+	font-size: 0.8em;
+}
+.submitIdle {
+	cursor: pointer;
+	display: block;
+	background-color: #DDD;
+}
+.submitIdle:hover {
+	background-color: #AAA;
+};
+.submitIdle:active {
+	background-color: #666;
+};
+.submitWorking {
+	cursor: default;
+}

@@ -30,7 +30,7 @@ function enableEventPopups(className) {
 		var div = document.createElement('div');
 		div.className = "eventPopup";
 		div.innerHTML = "testing 1 2 3";
-		div.setAttribute("style", "display: none;");
+		//div.setAttribute("style", "display: none;");
 		eventNames[i].appendChild(div);
     }
 }
@@ -48,8 +48,6 @@ function switchPopup() {
 			break;
 		default:
 			popup.setAttribute("style", "display: none;");
-			
-		console.log(popup.style.display);
 	}
 }
 
@@ -229,6 +227,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 			var inner = document.createElement("div");
 			inner.setAttribute("class", "eventName");
 			inner.style.cssFloat = "right";
+			inner.style.textAlign = "right";
 			inner.innerHTML = events[i].name;
 			var divX = 0;
 			div.style.width = x + "px";

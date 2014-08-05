@@ -84,14 +84,14 @@
 		var xmlhttp= window.XMLHttpRequest ?
 			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		
-		document.getElementById("addEventSubmit").innerText = "Working...";
+		//document.getElementById("addEventSubmit").innerText = "Working...";
 		
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
 				alert(xmlhttp.responseText); // Here is the response
-				document.getElementById("addEventSubmit").innerText = "Submit";
+				//document.getElementById("addEventSubmit").innerText = "Submit";
 		}
-
+		
 		xmlhttp.open("POST","insertEvent.php",true);
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		xmlhttp.send("name=" + name + "&start=" + start + "&end=" + end);

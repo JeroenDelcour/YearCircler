@@ -182,8 +182,8 @@ function drawArm (svg, centerX, centerY, radius, date) {
 function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 	// For bounding box purposes:
 	// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
-	var march31Y = centerY + Math.sin(dateToTau(3,31)*2*Math.PI+style.yearStartOffset) * radius;
-	var octorber1Y = centerY + Math.sin(dateToTau(10,1)*2*Math.PI+style.yearStartOffset) * radius;
+	var march31Y = centerY + Math.sin(dateToTau(2,31)*2*Math.PI+style.yearStartOffset) * radius;
+	var octorber1Y = centerY + Math.sin(dateToTau(9,1)*2*Math.PI+style.yearStartOffset) * radius;
 	
 	// create div alongside main svg element to put all event divs in
 	var eventsElem = document.createElement("div");
@@ -222,61 +222,63 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 //		text.setAttribute("eventID", events[i].id);
 //		svg.appendChild(text);
 		
-		var text = document.createElement("div");
-		text.setAttribute("class", "eventName");
-		text.innerHTML = events[i].name;
+		var div = document.createElement("div");
+		div.style.position = "absolute";
+		div.style.top = y+"px";
 		if (progressTmp > 0.5) {
-			var div = document.createElement("div");
-			div.style.position = "absolute";
-			div.style.top = y+"px";
+			var inner = document.createElement("div");
+			inner.setAttribute("class", "eventName");
+			inner.style.cssFloat = "right";
+			inner.innerHTML = events[i].name;
+			var divX = 0;
 			div.style.width = x + "px";
-			eventsElem.appendChild(div);
-			text.style.cssFloat = "right";
-			div.appendChild(text);
+			div.appendChild(inner);
 		} else {
-			text.style.position = "absolute";
-			text.style.top = y+"px";
-			text.style.left = x + "px";
-			eventsElem.appendChild(text);
+			var divX = x;
+			div.style.left = x + "px";
+			div.innerHTML = events[i].name;
+			div.setAttribute("class", "eventName");
 		}
-		/*
-		var BBox = text.getBBox();
+		eventsElem.appendChild(div);
+		var BBox = {"x": divX, "y": y, "width": div.offsetWidth, "height": div.offsetHeight};
+		
+		if (events[i].start.month <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
+			if (BBox.y + BBox.height > march31Y) {
+				var dY = Math.abs(BBox.y + BBox.height - march31Y);
+				endY -= dY;
+				div.style.top = y - dY + "px";
+				BBox.y -= dY;
+			}
+		}
+		else if (events[i].start.month >= 10 && BBox.y + BBox.height > octorber1Y) { // if in upper left half, make sure it doesn't overlap with events in the lower left quarter around the september-october border
+			var dY = Math.abs(BBox.y + BBox.height - octorber1Y);
+			endY -= dY;
+			div.style.top = y - dY + "px";
+			BBox.y -= dY;
+		}
+		
+		//var BBox = div.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER FROM SQL QUERY
 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
 			if (events[i].start.month <= 3 || events[i].start.month >= 10) { // check if event sits in upper half of clock
-				if (events[i].start.month <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
-					if (BBox.y + BBox.height > march31Y) {
-						var dY = Math.abs(BBox.y + BBox.height - march31Y);
-						endY -= dY;
-						text.setAttribute("y",y-dY);
-						BBox.y -= dY;
-						};
-				}
-				else if (BBox.y + BBox.height > octorber1Y) { // if in upper left half, make sure it doesn't overlap with events in the lower left quarter around the september-october border
-					var dY = Math.abs(BBox.y + BBox.height - octorber1Y);
-					endY -= dY;
-					text.setAttribute("y",y-dY);
-					BBox.y -= dY;
-				};
 				if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
 					var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
 					endY -= dY;
-					text.setAttribute("y",y-dY);
+					div.style.top = y - dY + "px";
 					BBox.y -= dY;
-				};
-			} // end upper half check
-			else if (events[i].start.month <= 9 && events[i].start.month >= 4 // if event sits in lower half
+				}
+			} else if (events[i].start.month <= 9 && events[i].start.month >= 4 // if event sits in lower half
 					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
 				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
 				endY += dY;
-				text.setAttribute("y",y+dY);
+				div.style.top = y + dY + "px";
 				BBox.y += dY;
-			}; // end lower half check
-		};*/
-		drawSVGline(svg,startX,startY,endX,endY,"eventLine");
-		//events[i].BBox = BBox;
-	};
-};
+			}
+		}
+	drawSVGline(svg,startX,startY,endX,endY,"eventLine")
+	events[i].BBox = BBox;
+	}
+}
 
 //////////////////////
 // helper functions //

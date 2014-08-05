@@ -43,7 +43,18 @@
 <script>
 	// get events array from JSON object created by getEvents.php
 	var events = JSON.parse( '<?php echo json_encode($data) ?>' );
+	console.log(events);
 	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
+	
+	// make events clickable
+	var classname = document.getElementsByClassName("eventName");
+    var myFunction = function() {
+        var attribute = this.getAttribute("eventID");
+        alert("Event ID: " + attribute);
+    };
+    for(var i=0;i<classname.length;i++){
+        classname[i].addEventListener('click', myFunction, false);
+    }
 </script>
 
 <!-- The 'add event' form -->

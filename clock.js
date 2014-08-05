@@ -180,6 +180,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 		var y = endY + 5 + 10 * (-Math.cos(progressTmp*2*Math.PI));
 		var anchor = (progressTmp > 0.5) ? "end" : "start";
 		var text = drawSVGtext(x,y,events[i].name,"black",anchor,"eventName");
+		text.setAttribute("eventID", events[i].id);
 		svg.appendChild(text);
 		var BBox = text.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER FROM SQL QUERY
@@ -212,7 +213,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 				endY += dY;
 				text.setAttribute("y",y+dY);
 				BBox.y += dY;
-			};
+			}; // end lower half check
 		};
 		drawSVGline(svg,startX,startY,endX,endY,"eventLine");
 		events[i].BBox = BBox;

@@ -99,4 +99,6 @@ function addToArray($row) {
 	);
 	return $entry;
 };
+
+$events = json_encode($data);
 ?>

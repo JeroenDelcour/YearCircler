@@ -42,8 +42,7 @@
 
 <script>
 	// get events array from JSON object created by getEvents.php
-	var events = JSON.parse( '<?php echo json_encode($data) ?>' );
-	console.log(events);
+	var events = <?=$events?>;
 	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
 	
 	// make events clickable

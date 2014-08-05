@@ -16,7 +16,6 @@ svg {display: block; position: absolute;}
 	font-family: 'Open Sans',sans-serif;
 	font-weight: 400;
 	position: relative;
-	z-index: 1;
 }
 .eventPopup {
 	width: 180px;

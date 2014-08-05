@@ -17,38 +17,45 @@ function init(svgElem, defsElem, events) {
 	drawClock(svg, def, centerX, centerY, radius, now);
 	drawArm(svg, centerX, centerY, radius, now);
 	drawEvents(svg, def, centerX, centerY, radius, now, events);
-	enableEventPopups("eventName");
-	
+	enableEventPopups();
 }
 
-function enableEventPopups(className) {
-	var eventNames = document.getElementsByClassName(className); // gets array of elements with the specified class name
+function enableEventPopups() {
+	var eventNames = document.getElementsByClassName("eventName"); // gets array of elements with the specified class name
+	
+	var popupLayer = document.createElement("div");
+	popupLayer.id = "popupLayer";
+	document.body.appendChild(popupLayer);
 	
     for (var i=0;i<eventNames.length;i++){
-        eventNames[i].addEventListener('click', switchPopup, false); // make it clickable
+		var eventID = eventNames[i].getAttribute("eventID");
+        eventNames[i].addEventListener('click', switchPopup); // make it clickable
 		
 		var div = document.createElement('div');
 		div.className = "eventPopup";
+		div.id = "eventPopup"+eventID;
 		div.innerHTML = "testing 1 2 3";
-		//div.setAttribute("style", "display: none;");
-		eventNames[i].appendChild(div);
+		div.setAttribute("style", "display: none;");
+		popupLayer.appendChild(div);
+		
+		
+		var switchPopup = function() {
+		//	var attribute = this.children[0].getAttribute("class");
+		//	alert(attribute);
+			popup = document.getElementById("eventPopup"+eventID);
+			console.log(popup);
+			switch(popup.style.display) {
+				case "none":
+					popup.setAttribute("style", "display: block;");
+					break;
+				case "block":
+					popup.setAttribute("style", "display: none;");
+					break;
+				default:
+					popup.setAttribute("style", "display: none;");
+			}
+		}
     }
-}
-
-function switchPopup() {
-//	var attribute = this.children[0].getAttribute("class");
-//	alert(attribute);
-	popup = this.children[0];
-	switch(popup.style.display) {
-		case "none":
-			popup.setAttribute("style", "display: block;");
-			break;
-		case "block":
-			popup.setAttribute("style", "display: none;");
-			break;
-		default:
-			popup.setAttribute("style", "display: none;");
-	}
 }
 
 // Because a lot of things are scaled to the clock radius, their style needs to be set using JavaScript instead of CSS
@@ -185,7 +192,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 	
 	// create div alongside main svg element to put all event divs in
 	var eventsElem = document.createElement("div");
-	eventsElem.className = "events";
+	eventsElem.id = "eventLayer";
 	svg.parentNode.appendChild(eventsElem);
 
 	for (i=0; i < events.length; i++) {

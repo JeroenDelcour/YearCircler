@@ -17,11 +17,11 @@ function init(svgElem, defsElem, events) {
 	drawClock(svg, def, centerX, centerY, radius, now);
 	drawArm(svg, centerX, centerY, radius, now);
 	drawEvents(svg, def, centerX, centerY, radius, now, events);
-	enableEventPopups("eventName");
+	buildEventPopups("eventName");
 	
 }
 
-function enableEventPopups(className) {
+function buildEventPopups(className) {
 	var eventNames = document.getElementsByClassName(className); // gets array of elements with the specified class name
 	
     for (var i=0;i<eventNames.length;i++){
@@ -29,9 +29,28 @@ function enableEventPopups(className) {
 		
 		var div = document.createElement('div');
 		div.className = "eventPopup";
-		div.innerHTML = "testing 1 2 3";
-		div.setAttribute("style", "display: none;");
+		div.style.backgroundColor = style.month.colors2[new Date().getMonth()];
+		div.style.display = "none";
 		eventNames[i].appendChild(div);
+		var button = document.createElement('div');
+		button.className = "button";
+		button.innerHTML = "Delete";
+		button.onClick = deleteEvent;
+		div.appendChild(button);
+		
+		var deleteEvent = function() {
+			console.log("deleting event");
+			var xmlhttp= window.XMLHttpRequest ?
+			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+					alert(xmlhttp.responseText); // Here is the response
+			}
+			
+			xmlhttp.open("POST","deleteEvent.php",true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send("id="+eventNames[i].getAttribute("eventid"));
+		}
     }
 }
 
@@ -41,13 +60,13 @@ function switchPopup() {
 	popup = this.children[0];
 	switch(popup.style.display) {
 		case "none":
-			popup.setAttribute("style", "display: block;");
+			popup.style.display = "block";
 			break;
 		case "block":
-			popup.setAttribute("style", "display: none;");
+			popup.style.display = "none";
 			break;
 		default:
-			popup.setAttribute("style", "display: none;");
+			popup.style.display = "none";
 	}
 }
 
@@ -229,6 +248,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 			inner.style.cssFloat = "right";
 			inner.style.textAlign = "right";
 			inner.innerHTML = events[i].name;
+			inner.setAttribute("eventid", events[i].id);
 			var divX = 0;
 			div.style.width = x + "px";
 			div.appendChild(inner);
@@ -237,6 +257,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 			div.style.left = x + "px";
 			div.innerHTML = events[i].name;
 			div.setAttribute("class", "eventName");
+			div.setAttribute("eventid", events[i].id);
 		}
 		eventsElem.appendChild(div);
 		var BBox = {"x": divX, "y": y, "width": div.offsetWidth, "height": div.offsetHeight};

@@ -55,7 +55,7 @@
 		<input type="text" name="start" id="start" class="datepicker" autocomplete="off" placeholder="Start date"  required/>
 		<input type="hidden" name="startAlt" id="startAlt"/>
 		<br/>
-		<input type="text" name="end" id="end" class="datepicker" autocomplete="off" placeholder="End date" required/>
+		<input type="text" name="end" id="end" class="datepicker" autocomplete="off" placeholder="End date (if multi-day event)"/>
 		<input type="hidden" name="endalt" id="endAlt"/>
 		<br/>
 		<input type="submit" id="addEventSubmit" class="submitIdle"></input>
@@ -77,13 +77,9 @@
 
 	function addEvent() {
 		var name = document.getElementById('name').value;
-		if(!Modernizr.inputtypes.date) {
-			var start = document.getElementById('startAlt').value;
-			var end = document.getElementById('endAlt').value;
-		} else {
-			var start = document.getElementById('start').value;
-			var end = document.getElementById('end').value;
-		};
+		var start = document.getElementById('startAlt').value;
+		var end = document.getElementById('endAlt').value;
+		if (end == '') { end = start; } // if no end date was given, assume a single-day event
 
 		var xmlhttp= window.XMLHttpRequest ?
 			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");

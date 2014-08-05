@@ -19,8 +19,8 @@ function init(svgElem, defsElem, events) {
 	drawEvents(svg, def, centerX, centerY, radius, now, events);
 }
 
-// Because a lot of things are scaled to the clock radius, their style needs to be set using javascript instead of CSS
-// TODO: move this to CSS using em to scale and make the body's font-size attribute the only thing that needs to be set to scale to the clock raidus by javascript
+// Because a lot of things are scaled to the clock radius, their style needs to be set using JavaScript instead of CSS
+// TODO: move this to CSS using em to scale and make the SVG element's font-size attribute the only thing that needs to be set by JavaScript to scale to the clock radius
 var style = {
 	dontLookBack: false, // if true, prevents past events from being displayed
 
@@ -223,7 +223,7 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 // helper functions //
 //////////////////////
 
-function drawSVGarc(centerx,centery,radius,start,end,styling,strokeWidth,classAttribute,fill) {
+function drawSVGarc(centerx,centery,radius,start,end,styling,strokeWidth,classAttribute) {
 	var radius = radius - strokeWidth/2;
 	var startX = centerx + radius * Math.cos(start*2*Math.PI + style.yearStartOffset);
 	var startY = centery + radius * Math.sin(start*2*Math.PI + style.yearStartOffset);
@@ -234,7 +234,6 @@ function drawSVGarc(centerx,centery,radius,start,end,styling,strokeWidth,classAt
 	path.setAttribute("d","M"+startX+" "+startY+" A"+radius+" "+radius+" 0 "+largeArcFlag+" 1 "+endX+" "+endY+"");
 	path.setAttribute("style",styling+" stroke-width: "+strokeWidth);
 	path.setAttribute("class",classAttribute);
-	path.setAttribute("fill","url(#"+fill+")");
 	return path;
 };
 
@@ -257,7 +256,7 @@ function drawSVGline(svg,startX,startY,endX,endY,classAttribute,styling) {
 	line.setAttribute("x2",endX);
 	line.setAttribute("y2",endY);
 	line.setAttribute("class",classAttribute);
-	line.setAttribute("style",styling);
+	if (styling !== 'undefined') { line.setAttribute("style",styling); }
 	svg.appendChild(line);
 };
 

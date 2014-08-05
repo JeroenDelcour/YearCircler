@@ -1,5 +1,7 @@
 body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em;}
 svg {display: block; position: fixed;}
+
+/* clock */
 .monthLabel {
 	font-family: 'Open Sans',sans-serif;
 	fill: #000;
@@ -10,8 +12,12 @@ svg {display: block; position: fixed;}
 .arm { stroke: black; stroke-width: 2; }
 .centerDot { fill: black; }
 .eventLine { stroke: black; stroke-width: 2; }
-.eventName { font-family: 'Open Sans',sans-serif; font-weight: 400; }
+.eventName {
+	font-family: 'Open Sans',sans-serif;
+	font-weight: 400;
+}
 
+/* 'add event' form */
 .menuContainer {
 	position: fixed;
 	top: 1.25em;
@@ -59,7 +65,7 @@ svg {display: block; position: fixed;}
 }
 */
 
-//	hamburger menu icon
+/*	hamburger menu icon
 //	.menuButton:before {
 //		content: "";
 //		position: absolute;
@@ -72,6 +78,7 @@ svg {display: block; position: fixed;}
 //			0 5px 0 0 white,
 //			0 10px 0 0 white;
 //	}
+*/
 
 .insertFormHidden {
 	display: none;
@@ -96,7 +103,7 @@ svg {display: block; position: fixed;}
 	background-image: linear-gradient(#FFF, #AAA);
 }
 .ui-widget {
-	font-size: 0.8em;
+	font-size: 0.71em;
 }
 .submitIdle {
 	cursor: pointer;

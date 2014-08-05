@@ -17,6 +17,40 @@ function init(svgElem, defsElem, events) {
 	drawClock(svg, def, centerX, centerY, radius, now);
 	drawArm(svg, centerX, centerY, radius, now);
 	drawEvents(svg, def, centerX, centerY, radius, now, events);
+	enableEventPopups("eventName");
+	
+}
+
+function enableEventPopups(className) {
+	var eventNames = document.getElementsByClassName(className); // gets array of elements with the specified class name
+	
+    for (var i=0;i<eventNames.length;i++){
+        eventNames[i].addEventListener('click', switchPopup, false); // make it clickable
+		
+		var div = document.createElement('div');
+		div.className = "eventPopup";
+		div.innerHTML = "testing 1 2 3";
+		div.setAttribute("style", "display: none;");
+		eventNames[i].appendChild(div);
+    }
+}
+
+function switchPopup() {
+//	var attribute = this.children[0].getAttribute("class");
+//	alert(attribute);
+	popup = this.children[0];
+	switch(popup.style.display) {
+		case "none":
+			popup.setAttribute("style", "display: block;");
+			break;
+		case "block":
+			popup.setAttribute("style", "display: none;");
+			break;
+		default:
+			popup.setAttribute("style", "display: none;");
+			
+		console.log(popup.style.display);
+	}
 }
 
 // Because a lot of things are scaled to the clock radius, their style needs to be set using JavaScript instead of CSS
@@ -150,6 +184,11 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 	// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
 	var march31Y = centerY + Math.sin(dateToTau(3,31)*2*Math.PI+style.yearStartOffset) * radius;
 	var octorber1Y = centerY + Math.sin(dateToTau(10,1)*2*Math.PI+style.yearStartOffset) * radius;
+	
+	// create div alongside main svg element to put all event divs in
+	var eventsElem = document.createElement("div");
+	eventsElem.className = "events";
+	svg.parentNode.appendChild(eventsElem);
 
 	for (i=0; i < events.length; i++) {
 		var progressStart = dateToTau(events[i].start.month-1, events[i].start.day); // months is decreased by one because dateToTau function assumes months range from 0-11
@@ -177,11 +216,30 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 		var endY = centerY + Math.sin(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.05;
 		// draw text
 		var x = endX;
-		var y = endY + 5 + 10 * (-Math.cos(progressTmp*2*Math.PI));
-		var anchor = (progressTmp > 0.5) ? "end" : "start";
-		var text = drawSVGtext(x,y,events[i].name,"black",anchor,"eventName");
-		text.setAttribute("eventID", events[i].id);
-		svg.appendChild(text);
+		var y = endY - 10 - 10 * (Math.cos(progressTmp*2*Math.PI));
+		var anchor = (progressTmp > 0.5) ? "right" : "left";
+//		var text = drawSVGtext(x,y,events[i].name,"black",anchor,"eventName");		
+//		text.setAttribute("eventID", events[i].id);
+//		svg.appendChild(text);
+		
+		var text = document.createElement("div");
+		text.setAttribute("class", "eventName");
+		text.innerHTML = events[i].name;
+		if (progressTmp > 0.5) {
+			var div = document.createElement("div");
+			div.style.position = "absolute";
+			div.style.top = y+"px";
+			div.style.width = x + "px";
+			eventsElem.appendChild(div);
+			text.style.cssFloat = "right";
+			div.appendChild(text);
+		} else {
+			text.style.position = "absolute";
+			text.style.top = y+"px";
+			text.style.left = x + "px";
+			eventsElem.appendChild(text);
+		}
+		/*
 		var BBox = text.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER FROM SQL QUERY
 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
@@ -214,9 +272,9 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 				text.setAttribute("y",y+dY);
 				BBox.y += dY;
 			}; // end lower half check
-		};
+		};*/
 		drawSVGline(svg,startX,startY,endX,endY,"eventLine");
-		events[i].BBox = BBox;
+		//events[i].BBox = BBox;
 	};
 };
 

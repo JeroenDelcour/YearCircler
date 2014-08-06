@@ -28,7 +28,7 @@ try {
 	));
 
 	# Affected Rows?
-	echo "Added " . $_POST['name'];
+	echo "Added event \"" . $_POST['name'] . "\".";
 }
 catch(PDOException $e) {
 	echo 'Error: ' . $e->getMessage();

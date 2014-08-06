@@ -12,52 +12,38 @@ function init(svgElem, defsElem, events) {
 	var centerX = window.innerWidth/2;
 	var centerY = window.innerHeight/2;
 	var radius = Math.min(window.innerWidth,window.innerHeight)/2 - style.outline.margin*2;
-	
 	var now = new Date();
+	
 	drawClock(svg, def, centerX, centerY, radius, now);
 	drawArm(svg, centerX, centerY, radius, now);
 	drawEvents(svg, def, centerX, centerY, radius, now, events);
-	buildEventPopups("eventName");
-	
+	buildEventPopups(now);
 }
 
-function buildEventPopups(className) {
-	var eventNames = document.getElementsByClassName(className); // gets array of elements with the specified class name
+function buildEventPopups(date) {
+	var colorOfTheMonth = style.month.colors2[date.getMonth()];
+	var eventWrappers = document.getElementsByClassName("eventWrapper"); // gets array of elements with the specified class name
 	
-    for (var i=0;i<eventNames.length;i++){
-        eventNames[i].addEventListener('click', switchPopup, false); // make it clickable
+    for (var i=0;i<eventWrappers.length;i++){
+        eventWrappers[i].children[0].addEventListener('click', switchPopup, false); // make eventLabel clickable
 		
 		var div = document.createElement('div');
 		div.className = "eventPopup";
-		div.style.backgroundColor = style.month.colors2[new Date().getMonth()];
+		div.style.backgroundColor = colorOfTheMonth;
+		div.style.borderColor = colorOfTheMonth;
 		div.style.display = "none";
-		eventNames[i].appendChild(div);
-		var button = document.createElement('div');
-		button.className = "button";
-		button.innerHTML = "Delete";
-		button.onClick = deleteEvent;
+		eventWrappers[i].appendChild(div);
+		var button = document.createElement('button');
+		button.innerHTML = "Delete event";
 		div.appendChild(button);
-		
-		var deleteEvent = function() {
-			console.log("deleting event");
-			var xmlhttp= window.XMLHttpRequest ?
-			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-					alert(xmlhttp.responseText); // Here is the response
-			}
-			
-			xmlhttp.open("POST","deleteEvent.php",true);
-			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			xmlhttp.send("id="+eventNames[i].getAttribute("eventid"));
-		}
+		button.addEventListener('click', deleteEvent, false);
     }
 }
 
 function switchPopup() {
 //	var attribute = this.children[0].getAttribute("class");
 //	alert(attribute);
-	popup = this.children[0];
+	popup = this.parentNode.children[1];
 	switch(popup.style.display) {
 		case "none":
 			popup.style.display = "block";
@@ -67,6 +53,24 @@ function switchPopup() {
 			break;
 		default:
 			popup.style.display = "none";
+	}
+}
+		
+function deleteEvent() {
+	var eventid = this.parentNode.parentNode.getAttribute("eventid"); // get eventid attribute from eventWrapper div
+	if (confirm("Delete event \""+this.parentNode.parentNode.children[0].innerHTML+"\"?")) {
+		console.log("Attempting to delete event "+eventid);
+		var xmlhttp= window.XMLHttpRequest ?
+		new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+				alert(xmlhttp.responseText); // Here is the response
+				//location.reload();
+		}
+		
+		xmlhttp.open("POST","deleteEvent.php",true);
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send("id="+eventid);
 	}
 }
 
@@ -239,25 +243,35 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 //		text.setAttribute("eventID", events[i].id);
 //		svg.appendChild(text);
 		
+		/* create div structure as such:
+		<div> // anonymous div to align names correctly in the left half of the clock
+			<div class="eventWrapper">
+				<div class="eventLabel">[event name goes here]</div>
+			</div>
+		</div>
+		*/
 		var div = document.createElement("div");
 		div.style.position = "absolute";
 		div.style.top = y+"px";
+		var label = document.createElement('div');
+		label.innerHTML = events[i].name;
+		label.className = "eventLabel";
 		if (progressTmp > 0.5) {
-			var inner = document.createElement("div");
-			inner.setAttribute("class", "eventName");
-			inner.style.cssFloat = "right";
-			inner.style.textAlign = "right";
-			inner.innerHTML = events[i].name;
-			inner.setAttribute("eventid", events[i].id);
+			var wrapper = document.createElement("div");
+			wrapper.className = "eventWrapper";
+			wrapper.style.cssFloat = "right";
+			wrapper.style.textAlign = "right";
+			wrapper.setAttribute("eventid", events[i].id);
+			wrapper.appendChild(label);
 			var divX = 0;
 			div.style.width = x + "px";
-			div.appendChild(inner);
+			div.appendChild(wrapper);
 		} else {
 			var divX = x;
 			div.style.left = x + "px";
-			div.innerHTML = events[i].name;
-			div.setAttribute("class", "eventName");
+			div.className = "eventWrapper";
 			div.setAttribute("eventid", events[i].id);
+			div.appendChild(label);
 		}
 		eventsElem.appendChild(div);
 		var BBox = {"x": divX, "y": y, "width": div.offsetWidth, "height": div.offsetHeight};

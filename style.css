@@ -1,4 +1,4 @@
-body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em;}
+body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em; font-family: 'Open Sans',sans-serif;}
 svg {display: block; position: absolute;}
 
 /* clock */
@@ -12,20 +12,34 @@ svg {display: block; position: absolute;}
 .arm { stroke: black; stroke-width: 2; }
 .centerDot { fill: black; }
 .eventLine { stroke: black; stroke-width: 2; }
-.eventName {
+.eventWrapper {
 	font-family: 'Open Sans',sans-serif;
 	font-weight: 400;
-	position: relative;
 }
 .eventPopup {
 	position: relative;
 	z-index: 1;
 	width: 100px;
+	height: 28px;
 	text-align: left;
 	border-radius: 6px;
-	padding: 10px;
+	padding: 2px 4px 2px 4px;
+	box-shadow: 2px 2px 5px #888888;
+	font-size: 0.8em;
 }
-.eventPopup .button {
+.eventPopup:after {
+	content: "";
+	display: block;
+	width: 0;
+	height: 0;
+	margin-left: 48px; /* 50 - (4/2) */
+	margin-top: -34px; /* 28 + 4 + (4/2) */
+	border-bottom: 4px solid black;
+	border-color: inherit;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+.eventPopup button {
 	padding: 4px;
 	border-radius: 3px;
 	border: none;
@@ -33,9 +47,9 @@ svg {display: block; position: absolute;}
 	box-sizing: border-box;
 	background-color: white;
 	background-image: linear-gradient(#FFF, #AAA);
-	opacity: 0.8;
+	text-align: center;
 }
-.eventPopup .button:active {
+.eventPopup button:active {
 	background-color: #EEE;
 	background-image: linear-gradient(#AAA, #FFF);
 }
@@ -58,6 +72,7 @@ svg {display: block; position: absolute;}
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	box-shadow: 2px 2px 5px #888888;
 }
 .menuButton {
 	position: relative;
@@ -124,6 +139,9 @@ svg {display: block; position: absolute;}
 #addEventSubmit {
 	background-color: white;
 	background-image: linear-gradient(#FFF, #AAA);
+}
+#addEventSubmit:active {
+	background-image: linear-gradient(#AAA, #FFF);
 }
 .ui-widget {
 	font-size: 0.71em;

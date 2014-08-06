@@ -80,7 +80,7 @@
 		var start = document.getElementById('startAlt').value;
 		var end = document.getElementById('endAlt').value;
 		if (end == '') { end = start; } // if no end date was given, assume a single-day event
-
+		
 		var xmlhttp= window.XMLHttpRequest ?
 			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		
@@ -89,7 +89,6 @@
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
 				alert(xmlhttp.responseText); // Here is the response
-				//document.getElementById("addEventSubmit").innerText = "Submit";
 		}
 		
 		xmlhttp.open("POST","insertEvent.php",true);

@@ -36,7 +36,7 @@
 </head>
 <body>
 
-<img class="logo" src="logo.svg"/>
+<img class="logo" src="logo.png"/>
 
 <svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
 	<defs id="defs">

@@ -1,7 +1,18 @@
 body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em; font-family: 'Open Sans',sans-serif;}
 svg {display: block; position: absolute;}
 
+.logo {
+	position: relative;
+	margin: 10px;
+	float: left;
+}
+
 /* clock */
+#clock {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 .monthLabel {
 	font-family: 'Open Sans',sans-serif;
 	fill: #000;
@@ -15,6 +26,9 @@ svg {display: block; position: absolute;}
 .eventWrapper {
 	font-family: 'Open Sans',sans-serif;
 	font-weight: 400;
+}
+.eventLabel {
+	cursor: pointer;
 }
 .eventPopup {
 	position: relative;
@@ -56,9 +70,11 @@ svg {display: block; position: absolute;}
 
 /* 'add event' form */
 .menuContainer {
-	position: fixed;
-	top: 1.25em;
-	left: 1.25em;
+	position: relative;
+	float: left;
+	clear: left;
+	margin-top: 1.25em;
+	margin-left: 1.25em;
 	font-family: 'Open Sans',sans-serif;
 	font-size: 1em;
 	font-weight: 300;

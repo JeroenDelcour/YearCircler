@@ -2,10 +2,11 @@
 
 <html lang="en">
 <head>
-	<title>Yearclock</title>
+	<title>yearCircler</title>
 	<meta charset="utf-8">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+	<link rel="shortcut icon" href="favicon.ico">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 	<link href='style.css' rel='stylesheet' type='text/css'>
@@ -34,6 +35,8 @@
 	</script>
 </head>
 <body>
+
+<img class="logo" src="logo.svg"/>
 
 <svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
 	<defs id="defs">

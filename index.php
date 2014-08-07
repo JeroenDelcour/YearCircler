@@ -2,10 +2,11 @@
 
 <html lang="en">
 <head>
-	<title>Yearclock</title>
+	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+	<link rel="shortcut icon" href="favicon.ico">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 	<link href='style.css' rel='stylesheet' type='text/css'>
@@ -35,6 +36,8 @@
 </head>
 <body>
 
+<img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
+
 <svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
 	<defs id="defs">
 	</defs>
@@ -44,16 +47,6 @@
 	// get events array from JSON object created by getEvents.php
 	var events = <?=$events?>;
 	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
-	
-	// make events clickable
-	var classname = document.getElementsByClassName("eventName");
-    var myFunction = function() {
-        var attribute = this.getAttribute("eventID");
-        alert("Event ID: " + attribute);
-    };
-    for(var i=0;i<classname.length;i++){
-        classname[i].addEventListener('click', myFunction, false);
-    }
 </script>
 
 <!-- The 'add event' form -->
@@ -90,7 +83,7 @@
 		var start = document.getElementById('startAlt').value;
 		var end = document.getElementById('endAlt').value;
 		if (end == '') { end = start; } // if no end date was given, assume a single-day event
-
+		
 		var xmlhttp= window.XMLHttpRequest ?
 			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		
@@ -99,7 +92,6 @@
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
 				alert(xmlhttp.responseText); // Here is the response
-				//document.getElementById("addEventSubmit").innerText = "Submit";
 		}
 		
 		xmlhttp.open("POST","insertEvent.php",true);

@@ -1,7 +1,18 @@
-body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em;}
-svg {display: block; position: fixed;}
+body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em; font-family: 'Open Sans',sans-serif;}
+svg {display: block; position: absolute;}
+
+.logo {
+	position: relative;
+	margin: 10px;
+	float: left;
+}
 
 /* clock */
+#clock {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 .monthLabel {
 	font-family: 'Open Sans',sans-serif;
 	fill: #000;
@@ -12,16 +23,61 @@ svg {display: block; position: fixed;}
 .arm { stroke: black; stroke-width: 2; }
 .centerDot { fill: black; }
 .eventLine { stroke: black; stroke-width: 2; }
-.eventName {
+.eventWrapper {
 	font-family: 'Open Sans',sans-serif;
 	font-weight: 400;
+}
+.eventLabel {
+	cursor: pointer;
+}
+.eventLabel:hover {
+	text-decoration: underline;
+}
+.eventPopup {
+	position: relative;
+	z-index: 1;
+	width: 100px;
+	height: 28px;
+	text-align: left;
+	border-radius: 6px;
+	padding: 2px 4px 2px 4px;
+	box-shadow: 2px 2px 5px #888888;
+	font-size: 0.8em;
+}
+.eventPopup:after {
+	content: "";
+	display: block;
+	width: 0;
+	height: 0;
+	margin-left: 48px; /* 50 - (4/2) */
+	margin-top: -34px; /* 28 + 4 + (4/2) */
+	border-bottom: 4px solid black;
+	border-color: inherit;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+.eventPopup button {
+	padding: 4px;
+	border-radius: 3px;
+	border: none;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: white;
+	background-image: linear-gradient(#FFF, #AAA);
+	text-align: center;
+}
+.eventPopup button:active {
+	background-color: #EEE;
+	background-image: linear-gradient(#AAA, #FFF);
 }
 
 /* 'add event' form */
 .menuContainer {
-	position: fixed;
-	top: 1.25em;
-	left: 1.25em;
+	position: relative;
+	float: left;
+	clear: left;
+	margin-top: 1.25em;
+	margin-left: 1.25em;
 	font-family: 'Open Sans',sans-serif;
 	font-size: 1em;
 	font-weight: 300;
@@ -35,6 +91,7 @@ svg {display: block; position: fixed;}
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	box-shadow: 2px 2px 5px #888888;
 }
 .menuButton {
 	position: relative;
@@ -101,6 +158,9 @@ svg {display: block; position: fixed;}
 #addEventSubmit {
 	background-color: white;
 	background-image: linear-gradient(#FFF, #AAA);
+}
+#addEventSubmit:active {
+	background-image: linear-gradient(#AAA, #FFF);
 }
 .ui-widget {
 	font-size: 0.71em;

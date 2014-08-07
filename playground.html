@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<title>Afkortingmaker</title>
+	<meta charset="utf-8">
+	<style>
+		#input {
+			width: 800px;
+		}
+	</style>
+</head>
+<body onLoad="setup();">
+<script>
+var str = "dit is een test zin";
+var matches = str.match(/\b\w/g); // /pattern/modifiers
+var acronym = matches.join('');
+//console.log(acronym);
+
+function updateAcronym() {
+	var str = document.getElementById("input").value;
+	var str2 = str.replace(/ *\([^)]* */g, '');
+	var matches = str2.match(/\b\w/g); // /pattern/modifiers
+	var acronym = matches.join('');
+	document.getElementById("acronym").innerHTML = acronym;
+};
+
+function setup() {
+	document.getElementById("input").value = "Appricieerders (van) Gezamelijk Inventief Vertier (op) Schermen (van) Aanzienlijke Proporties";
+	updateAcronym();
+};
+</script>
+
+<textarea id="input" onkeyup="updateAcronym();"></textarea>
+<span id="acronym"></span>
+<div>(Alles tussen haakjes wordt weggelaten in de afkorting)</div>
+</body>
+</html>

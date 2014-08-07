@@ -30,6 +30,9 @@ svg {display: block; position: absolute;}
 .eventLabel {
 	cursor: pointer;
 }
+.eventLabel:hover {
+	text-decoration: underline;
+}
 .eventPopup {
 	position: relative;
 	z-index: 1;

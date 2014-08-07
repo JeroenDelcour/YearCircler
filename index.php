@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-	<title>yearCircler</title>
+	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
@@ -36,7 +36,7 @@
 </head>
 <body>
 
-<img class="logo" src="logo.png"/>
+<img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
 
 <svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xpreserveAspectRatio="xMinYMin slice">
 	<defs id="defs">

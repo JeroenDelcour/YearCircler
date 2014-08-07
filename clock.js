@@ -1,9 +1,22 @@
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 
+
+
 function init(svgElem, defsElem, events) {
 	var svg = document.getElementById(svgElem);
 	var def = document.getElementById(defsElem);
+	var now = new Date(2014, 7, 15);
+	
+	// these are the days of the week for each month, in order
+	var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	var daysInYear = 365;
+
+	// check for leap year
+	if ((now.year % 4 == 0 && now.year % 100 != 0) || now.year % 400 == 0){
+		daysInYear = 366;
+		daysInMonth[1] = 29;
+	}
 
 	svg.setAttribute("width",window.innerWidth);
 	svg.setAttribute("height",window.innerHeight);
@@ -12,11 +25,11 @@ function init(svgElem, defsElem, events) {
 	var centerX = window.innerWidth/2;
 	var centerY = window.innerHeight/2;
 	var radius = Math.min(window.innerWidth,window.innerHeight)/2 - style.outline.margin*2;
-	var now = new Date();
 	
-	drawClock(svg, def, centerX, centerY, radius, now);
-	drawArm(svg, centerX, centerY, radius, now);
-	drawEvents(svg, def, centerX, centerY, radius, now, events);
+	drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now);
+	drawDays(svg, centerX, centerY, radius, daysInYear);
+	drawArm(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
+	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now, events);
 	buildEventPopups(now);
 }
 
@@ -41,8 +54,6 @@ function buildEventPopups(date) {
 }
 
 function switchPopup() {
-//	var attribute = this.children[0].getAttribute("class");
-//	alert(attribute);
 	popup = this.parentNode.children[1];
 	switch(popup.style.display) {
 		case "none":
@@ -123,31 +134,32 @@ var style = {
 // draw functions //
 ////////////////////
 
-function drawClock(svg, def, centerX, centerY, radius, date) {
+function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date) {
 	// these are human-readable month name labels, in order
-	monthsLabels = ['January', 'February', 'March', 'April',
+	var monthsLabels = ['January', 'February', 'March', 'April',
 						 'May', 'June', 'July', 'August', 'September',
 						 'October', 'November', 'December'];
-	// these are the days of the week for each month, in order
-	daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-	daysInYear = 365;
-
-	// check for leap year
-	if ((date.year % 4 == 0 && date.year % 100 != 0) || date.year % 400 == 0){
-		daysInYear = 366;
-		daysInMonth[1] = 29;
+	var thicknessAbs = style.month.thickness * radius;
+	
+	var beginDay = 0;
+	for (var i=0; i < 12; i++) {
+		var endDay, begin, end;
+		
+		drawMonth();
+		drawMonthLabel();
+		
+		beginDay = endDay;
 	}
 	
-	// draw months
-	var beginDay = 0;
-	var thicknessAbs = style.month.thickness * radius;
-	for (var i=0; i < 12; i++) {
-		var endDay = beginDay + daysInMonth[i];
-		var begin = (beginDay + style.month.margin/2) / daysInYear;
-		var end = (endDay - style.month.margin/2) / daysInYear;
+	function drawMonth() {
+		endDay = beginDay + daysInMonth[i];
+		begin = (beginDay + style.month.margin/2) / daysInYear;
+		end = (endDay - style.month.margin/2) / daysInYear;
 		var arc = drawSVGarc(centerX,centerY,radius,begin,end,"fill: none; stroke: "+style.month.colors2[i]+";",thicknessAbs,"month");
 		svg.appendChild(arc);
-		// draw month labels
+	}
+	
+	function drawMonthLabel() {
 		createDefPath(def,centerX,centerY,radius*(1-style.month.thickness+0.03),begin,end,monthsLabels[i]); // create path for label to follow, so that it curves with the clock
 		var text = drawSVGtext(0,0,"","white","middle","monthLabel"); // create the text element
 		text.setAttribute("style", "font-size: "+style.month.fontSize*radius+";"); // set font size relative to radius
@@ -156,12 +168,12 @@ function drawClock(svg, def, centerX, centerY, radius, date) {
 		textPath.setAttribute("startOffset","50%");
 		textPath.textContent = monthsLabels[i];
 		text.appendChild(textPath);
-
 		svg.appendChild(text);
-		beginDay = endDay;
-	};
-	
-	// draw day marks
+	}
+}
+
+
+function drawDays(svg, centerX, centerY, radius, daysInYear) {
 	for (var i=0; i < daysInYear; i++) {
 		var progressTmp = (i-0.5) / daysInYear;
 		var length = ((i-4) % 7 == 0 || (i-4) % 7 == 1) ? 2*style.day.length : style.day.length;
@@ -170,13 +182,12 @@ function drawClock(svg, def, centerX, centerY, radius, date) {
 		var endX = centerX + Math.cos(progressTmp * 2*Math.PI+style.yearStartOffset) * radius;
 		var endY = centerY + Math.sin(progressTmp * 2*Math.PI+style.yearStartOffset) * radius;
 		drawSVGline(svg,startX,startY,endX,endY,"day","stroke-width: "+style.day.thickness * radius+";");
-	};
-	
+	}
 }
 
-function drawArm (svg, centerX, centerY, radius, date) {
+function drawArm (svg, centerX, centerY, radius, daysInMonth, daysInYear, date) {
 	// calculate how far along in the year we are
-	todayTau = dateToTau(date.getMonth(), date.getDate());
+	todayTau = dateToTau(date.getMonth(), date.getDate(), daysInMonth, daysInYear);
 
 	// draw arm
 	var startX = centerX - Math.cos(todayTau*2*Math.PI+style.yearStartOffset) * style.arm.length * 0.1 * radius;
@@ -200,11 +211,11 @@ function drawArm (svg, centerX, centerY, radius, date) {
 	svg.appendChild(circle);
 }
 
-function drawEvents(svg, def, centerX, centerY, radius, date, events) {
+function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date, events) {
 	// For bounding box purposes:
 	// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
-	var march31Y = centerY + Math.sin(dateToTau(2,31)*2*Math.PI+style.yearStartOffset) * radius;
-	var octorber1Y = centerY + Math.sin(dateToTau(9,1)*2*Math.PI+style.yearStartOffset) * radius;
+	var march31Y = centerY + Math.sin(dateToTau(2, 31, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;
+	var octorber1Y = centerY + Math.sin(dateToTau(9, 1, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;
 	
 	// create div alongside main svg element to put all event divs in
 	var eventsElem = document.createElement("div");
@@ -212,9 +223,9 @@ function drawEvents(svg, def, centerX, centerY, radius, date, events) {
 	svg.parentNode.appendChild(eventsElem);
 
 	for (i=0; i < events.length; i++) {
-		var progressStart = dateToTau(events[i].start.month-1, events[i].start.day); // months is decreased by one because dateToTau function assumes months range from 0-11
-		var progressEnd = dateToTau(events[i].end.month-1, events[i].end.day);
-		var todayTau = dateToTau(date.getMonth(), date.getDate());
+		var progressStart = dateToTau(events[i].start.month-1, events[i].start.day, daysInMonth, daysInYear); // months is decreased by one because dateToTau function assumes months range from 0-11
+		var progressEnd = dateToTau(events[i].end.month-1, events[i].end.day, daysInMonth, daysInYear);
+		var todayTau = dateToTau(date.getMonth(), date.getDate(), daysInMonth, daysInYear);
 		if (events[i].start.year !== date.getFullYear() || (style.dontLookBack && progressEnd < todayTau)) {
 			continue;
 		};
@@ -367,7 +378,7 @@ function drawSVGtext(x,y,content,color,anchor,classAttribute) {
 	return text;
 };
 
-function dateToTau(month,day) { // convert date to Tau value if the year was a circle. Assumes months range from 0-11 and days range from 1-31.
+function dateToTau(month,day,daysInMonth,daysInYear) { // convert date to Tau value if the year was a circle. Assumes months range from 0-11 and days range from 1-31.
 	var dayAbs = day;
 	for (var i=0; i < month; i++) {
 		dayAbs += daysInMonth[i];

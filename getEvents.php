@@ -13,7 +13,7 @@ try {
 	$stmt = $conn->prepare("SELECT * FROM events WHERE end < '2015-01-01' AND end >= '2014-10-01' ORDER BY start ASC");
 	$stmt->execute();
 	$result3 = $stmt->fetchAll();
-	$stmt = $conn->prepare("SELECT * FROM events WHERE end < '2014-4-01' AND end >= '2014-01-01' ORDER BY start DESC");
+	$stmt = $conn->prepare("SELECT * FROM events WHERE end < '2014-04-01' AND end >= '2014-01-01' ORDER BY start DESC");
 	$stmt->execute();
 	$result4 = $stmt->fetchAll();
 

@@ -44,16 +44,22 @@
 		#releaseNote {
 			text-align: center;
 			position: relative;
-			margin-top: 6em;
+			margin-top: 4em;
 		}
 		.logo {
-			margin: auto;
+			margin-left: auto;
+			margin-right: auto;
 			display: block;
 		}
+		.mail {
+			text-align: center;
+			display: block;
+			margin-top: 4em;
+		}
 	</style>
-	<link rel="shortcut icon" href="clock-favicon.ico">
 </head>
 <body>
+<?php include_once("analyticstracking.php") ?>
 
 <div id="main">
 	<div id="wrapper">
@@ -64,6 +70,8 @@
 		<h1>Intuitively plan your important events for the year.</h1>
 		
 		<p id="releaseNote">Soon to be released.</p>
+		
+		<a class="mail" href="mailto:contact@yearcircler.com">contact@yearcircler.com</a>
 	</div>
 </div>
 

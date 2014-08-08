@@ -193,7 +193,7 @@ function drawArm (svg, centerX, centerY, radius, daysInMonth, daysInYear, date) 
 	var startX = centerX - Math.cos(todayTau*2*Math.PI+style.yearStartOffset) * style.arm.length * 0.1 * radius;
 	var startY = centerY - Math.sin(todayTau*2*Math.PI+style.yearStartOffset) * style.arm.length * 0.1 * radius;
 	var adjustLength;
-	if (date.getDay() == '0' || date.getDay() == '6') {
+	if (date.getDate() == '0' || date.getDate() == '6') {
 		adjustLength = 2*style.day.length - 0.04;
 	} else {
 		adjustLength = style.day.length - 0.04;
@@ -223,10 +223,10 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 	svg.parentNode.appendChild(eventsElem);
 
 	for (i=0; i < events.length; i++) {
-		var progressStart = dateToTau(events[i].start.month-1, events[i].start.day, daysInMonth, daysInYear); // months is decreased by one because dateToTau function assumes months range from 0-11
-		var progressEnd = dateToTau(events[i].end.month-1, events[i].end.day, daysInMonth, daysInYear);
+		var progressStart = dateToTau(events[i].start.getMonth(), events[i].start.getDate(), daysInMonth, daysInYear);
+		var progressEnd = dateToTau(events[i].end.getMonth(), events[i].end.getDate(), daysInMonth, daysInYear);
 		var todayTau = dateToTau(date.getMonth(), date.getDate(), daysInMonth, daysInYear);
-		if (events[i].start.year !== date.getFullYear() || (style.dontLookBack && progressEnd < todayTau)) {
+		if (events[i].start.getFullYear() !== date.getFullYear() || (style.dontLookBack && progressEnd < todayTau)) {
 			continue;
 		};
 		if (progressEnd == progressStart) {// check whether it's a one-day or multiple-day event
@@ -287,7 +287,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		eventsElem.appendChild(div);
 		var BBox = {"x": divX, "y": y, "width": div.offsetWidth, "height": div.offsetHeight};
 		
-		if (events[i].start.month <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
+		if (events[i].start.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
 			if (BBox.y + BBox.height > march31Y) {
 				var dY = Math.abs(BBox.y + BBox.height - march31Y);
 				endY -= dY;
@@ -295,7 +295,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 				BBox.y -= dY;
 			}
 		}
-		else if (events[i].start.month >= 10 && BBox.y + BBox.height > octorber1Y) { // if in upper left half, make sure it doesn't overlap with events in the lower left quarter around the september-october border
+		else if (events[i].start.getMonth() >= 10 && BBox.y + BBox.height > octorber1Y) { // if in upper left half, make sure it doesn't overlap with events in the lower left quarter around the september-october border
 			var dY = Math.abs(BBox.y + BBox.height - octorber1Y);
 			endY -= dY;
 			div.style.top = y - dY + "px";
@@ -305,14 +305,14 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		//var BBox = div.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER FROM SQL QUERY
 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-			if (events[i].start.month <= 3 || events[i].start.month >= 10) { // check if event sits in upper half of clock
+			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 10) { // check if event sits in upper half of clock
 				if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
 					var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
 					endY -= dY;
 					div.style.top = y - dY + "px";
 					BBox.y -= dY;
 				}
-			} else if (events[i].start.month <= 9 && events[i].start.month >= 4 // if event sits in lower half
+			} else if (events[i].start.getMonth() <= 9 && events[i].start.getMonth() >= 4 // if event sits in lower half
 					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
 				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
 				endY += dY;

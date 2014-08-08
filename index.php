@@ -11,7 +11,6 @@
 	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 	<link href='style.css' rel='stylesheet' type='text/css'>
 	<script src="clock.js"></script>
-	<?php require('getEvents.php'); ?>
 	<script>
 	$(function() {
 //		if(!Modernizr.inputtypes.date) {
@@ -44,60 +43,54 @@
 </svg>
 
 <script>
-	// get events array from JSON object created by getEvents.php
-	var events = <?=$events?>;
+	// get events array from WebStorage and sort them
+	var events = sortEvents(getEvents());
 	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
-</script>
-
-<!-- The 'add event' form -->
-<div class="menuContainer" id="menuContainer">
-<div class="menuButton" onClick="menuClick()">Add event</div>
-	<form class="insertFormHidden" id="addEventForm" onSubmit="addEvent();return false">
-		<input type="text" name="name" id="name" autocomplete="off" placeholder="Event name" required/>
-		<br/>
-		<input type="text" name="start" id="start" class="datepicker" autocomplete="off" placeholder="Start date"  required/>
-		<input type="hidden" name="startAlt" id="startAlt"/>
-		<br/>
-		<input type="text" name="end" id="end" class="datepicker" autocomplete="off" placeholder="End date (if multi-day event)"/>
-		<input type="hidden" name="endalt" id="endAlt"/>
-		<br/>
-		<input type="submit" id="addEventSubmit" class="submitIdle"></input>
-	</form>
-</div>
-
-<script>
-	// set 'add event' div background color to this month's color
-	document.getElementById('menuContainer').setAttribute('style', 'background-color: ' + style.month.colors2[new Date().getMonth()] + ';');
-
-	function menuClick() { // toggles the 'add event' form to show or hide
-		var form = document.getElementById("addEventForm");
-		if (form.className == "insertFormHidden") {
-			form.className = "insertFormShown";
-		} else if (form.className == "insertFormShown") {
-			form.className = "insertFormHidden";
-		};
-	};
-
-	function addEvent() {
-		var name = document.getElementById('name').value;
-		var start = document.getElementById('startAlt').value;
-		var end = document.getElementById('endAlt').value;
-		if (end == '') { end = start; } // if no end date was given, assume a single-day event
-		
-		var xmlhttp= window.XMLHttpRequest ?
-			new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-		
-		//document.getElementById("addEventSubmit").innerText = "Working...";
-		
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-				alert(xmlhttp.responseText); // Here is the response
+	
+	function getEvents() {
+		var events = JSON.parse(localStorage.getItem('events'));
+		for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
+			events[i].start = new Date(events[i].start);
+			events[i].end = new Date(events[i].end);
 		}
-		
-		xmlhttp.open("POST","insertEvent.php",true);
-		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlhttp.send("name=" + name + "&start=" + start + "&end=" + end);
-};
+		events.sort(function (a,b) {
+			return b.end - a.end; // ascending
+		});
+		return events;
+	}
+
+	function sortEvents(events) {
+		var ur = [];
+		var lr = [];
+		var ll = [];
+		var ul = [];
+		for(i=0;i<events.length;i++) {
+			var date = events[i].end;
+			if (date < new Date(2014,10,01) && date >= new Date(2014,07,01)) { ll.push(events[i]); }
+			else if (date < new Date(2014,07,01) && date >= new Date(2014,04,01)) { lr.push(events[i]); }
+			else if (date < new Date(2015,01,01) && date >= new Date(2014,10,01)) { ul.push(events[i]); }
+			else if (date < new Date(2014,04,01) && date >= new Date(2014,01,01)) { ur.push(events[i]); }
+		}
+		ur.sort(function (a,b) {
+			return b.end - a.end; // ascending
+		});
+		lr.sort(function (a,b) {
+			return b.end - a.end; // descending
+		});
+		ll.sort(function (a,b) {
+			return b.end - a.end; // ascending
+		});
+		ul.sort(function (a,b) {
+			return a.end - b.end; // descending
+		});
+		var events = ur.concat(ur,lr,ll,ul);
+		console.log(lr);
+		console.log(events);
+		return events;
+	}
 </script>
+
+<?php include('addEventForm.php') ?>
+
 </body>
 </html>

@@ -3,7 +3,7 @@ var xlinkNS = "http://www.w3.org/1999/xlink";
 
 
 
-function init(svgElem, defsElem, events) {
+function init(svgElem, defsElem) {
 	var svg = document.getElementById(svgElem);
 	var def = document.getElementById(defsElem);
 	var now = new Date(2014, 7, 15);
@@ -29,7 +29,7 @@ function init(svgElem, defsElem, events) {
 	drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now);
 	drawDays(svg, centerX, centerY, radius, daysInYear);
 	drawArm(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
-	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now, events);
+	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now);
 	buildEventPopups(now);
 }
 
@@ -68,20 +68,15 @@ function switchPopup() {
 }
 		
 function deleteEvent() {
-	var eventid = this.parentNode.parentNode.getAttribute("eventid"); // get eventid attribute from eventWrapper div
-	if (confirm("Delete event \""+this.parentNode.parentNode.children[0].innerHTML+"\"?")) {
-		console.log("Attempting to delete event "+eventid);
-		var xmlhttp= window.XMLHttpRequest ?
-		new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-				alert(xmlhttp.responseText); // Here is the response
-				//location.reload();
-		}
-		
-		xmlhttp.open("POST","deleteEvent.php",true);
-		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlhttp.send("id="+eventid);
+	var events = JSON.parse(localStorage.getItem('events'));
+	var eventName = this.parentNode.parentNode.children[0].innerHTML;
+	var eventid = this.parentNode.parentNode.getAttribute("eventid");
+	if (confirm("Delete event \""+eventName+"\"?")) {
+		newArray = events.filter(function (el) {
+			return el.id != eventid;
+	});
+	localStorage.setItem('events', JSON.stringify(newArray));
+	location.reload();
 	}
 }
 
@@ -211,7 +206,45 @@ function drawArm (svg, centerX, centerY, radius, daysInMonth, daysInYear, date) 
 	svg.appendChild(circle);
 }
 
-function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date, events) {
+function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date) {
+	var events = JSON.parse(localStorage.getItem('events')); // get events array from WebStorage
+	var ll = [];
+	var lr = [];
+	var ul = [];
+	var ur = [];
+	for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
+		events[i].start = new Date(events[i].start);
+		events[i].end = new Date(events[i].end);
+		if (events[i].end < new Date(2014,09,01) && events[i].end >= new Date(2014,06,01)) {
+			ll.push(events[i]);
+		} else if (events[i].end < new Date(2014,06,01) && events[i].end >= new Date(2014,03,01)) {
+			lr.push(events[i]);
+		} else if (events[i].end < new Date(2015,00,01) && events[i].end >= new Date(2014,09,01)) {
+			ul.push(events[i]);
+		} else if (events[i].end < new Date(2014,03,01) && events[i].end >= new Date(2014,00,01)) {
+			ur.push(events[i]);
+		}
+	}
+	ll.sort(function (a,b) { return b.end - a.end; });
+	lr.sort(function (a,b) { return a.end - b.end; });
+	ul.sort(function (a,b) { return a.end - b.end; });
+	ur.sort(function (a,b) { return b.end - a.end; });
+	events = ll.concat(lr,ul,ur);
+	/*
+	events.sort(function (a,b) { // sort events for bounding box purposes
+		if (a.end < new Date(2014,09,01) && a.end >= new Date(2014,06,01) && b.end < new Date(2014,09,01) && b.end >= new Date(2014,06,01)) {
+			console.log(a.name+", "+b.name);
+			return b.end - a.end;
+		} else if (a.end < new Date(2014,06,01) && a.end >= new Date(2014,03,01) && b.end < new Date(2014,06,01) && b.end >= new Date(2014,03,01)) {
+			return a.end - b.end;
+		} else if (a.end < new Date(2015,00,01) && a.end >= new Date(2014,09,01) && b.end < new Date(2015,00,01) && b.end >= new Date(2014,09,01)) {
+			return b.end - a.nd;
+		} else if (a.end < new Date(2014,03,01) && a.end >= new Date(2014,00,01) && b.end < new Date(2014,03,01) && b.end >= new Date(2014,00,01)) {
+			return a.end - b.end;
+		} else {
+			return 0;
+	}});
+	*/
 	// For bounding box purposes:
 	// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
 	var march31Y = centerY + Math.sin(dateToTau(2, 31, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;

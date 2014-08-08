@@ -15,11 +15,11 @@
 	$(function() {
 //		if(!Modernizr.inputtypes.date) {
 //			console.log("The 'date' input type is not supported by your browser. Using JQueryUI datepicker instead.");
-			$( "#start" ).datepicker({
+			$( "#addEventStart" ).datepicker({
 			  altField: "#startAlt",
 			  altFormat: "yy-mm-dd"
 			});
-			$( "#end" ).datepicker({
+			$( "#addEventEnd" ).datepicker({
 			  altField: "#endAlt",
 			  altFormat: "yy-mm-dd"
 			});
@@ -43,51 +43,7 @@
 </svg>
 
 <script>
-	// get events array from WebStorage and sort them
-	var events = sortEvents(getEvents());
-	init("clock", "defs", events); // initialize clock, passing SVG and def elements names as args, as well as the event array
-	
-	function getEvents() {
-		var events = JSON.parse(localStorage.getItem('events'));
-		for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
-			events[i].start = new Date(events[i].start);
-			events[i].end = new Date(events[i].end);
-		}
-		events.sort(function (a,b) {
-			return b.end - a.end; // ascending
-		});
-		return events;
-	}
-
-	function sortEvents(events) {
-		var ur = [];
-		var lr = [];
-		var ll = [];
-		var ul = [];
-		for(i=0;i<events.length;i++) {
-			var date = events[i].end;
-			if (date < new Date(2014,10,01) && date >= new Date(2014,07,01)) { ll.push(events[i]); }
-			else if (date < new Date(2014,07,01) && date >= new Date(2014,04,01)) { lr.push(events[i]); }
-			else if (date < new Date(2015,01,01) && date >= new Date(2014,10,01)) { ul.push(events[i]); }
-			else if (date < new Date(2014,04,01) && date >= new Date(2014,01,01)) { ur.push(events[i]); }
-		}
-		ur.sort(function (a,b) {
-			return b.end - a.end; // ascending
-		});
-		lr.sort(function (a,b) {
-			return b.end - a.end; // descending
-		});
-		ll.sort(function (a,b) {
-			return b.end - a.end; // ascending
-		});
-		ul.sort(function (a,b) {
-			return a.end - b.end; // descending
-		});
-		var events = ur.concat(ur,lr,ll,ul);
-		console.log(lr);
-		console.log(events);
-		return events;
-	}
+	init("clock", "defs"); // initialize clock, passing SVG and def elements names as arguments
 </script>
 
 <?php include('addEventForm.php') ?>

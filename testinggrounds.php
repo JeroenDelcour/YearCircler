@@ -33,40 +33,7 @@ function getEvents() {
 	return events;
 }
 
-function sortEvents(events) {
-	var ur = [];
-	var lr = [];
-	var ll = [];
-	var ul = [];
-	for(i=0;i<events.length;i++) {
-		var date = events[i].end;
-		if (date < new Date(2014,10,01) && date >= new Date(2014,07,01)) { ll.push(events[i]); }
-		else if (date < new Date(2014,07,01) && date >= new Date(2014,04,01)) { lr.push(events[i]); }
-		else if (date < new Date(2015,01,01) && date >= new Date(2014,10,01)) { ul.push(events[i]); }
-		else if (date < new Date(2014,04,01) && date >= new Date(2014,01,01)) { ur.push(events[i]); }
-	}
-	ur.sort(function (a,b) {
-		return b.end - a.end; // ascending
-	});
-	lr.sort(function (a,b) {
-		return a.end - b.end; // descending
-	});
-	ll.sort(function (a,b) {
-		return b.end - a.end; // ascending
-	});
-	ul.sort(function (a,b) {
-		return a.end - b.end; // descending
-	});
-	events = ur.concat(lr,ll,ul);
-	return events;
-}
+console.log(JSON.stringify([1,2]));
 </script>
-
-<button onClick='saveEvents()'>Put events into WebStorage</button>
-<br/>
-<button onClick='getEvents()'>Get events and log to console</button>
-<br/>
-<button onClick='sortEvents(getEvents())'>Sort events</button>
-
 </body>
 </html>

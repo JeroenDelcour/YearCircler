@@ -35,5 +35,7 @@ function getEvents() {
 
 console.log(JSON.stringify([1,2]));
 </script>
+
+<button onClick='saveEvents()'>Move events from MySQL DB to LocalStorage</button>
 </body>
 </html>

@@ -32,7 +32,11 @@
 		var end = document.getElementById('addEventEnd').value;
 		if (end == '') { end = start; } // if no end date was given, assume a single-day event
 		
-		var events = JSON.parse(localStorage.getItem('events'));
+		if (localStorage.getItem('events') === null) {
+			var events = [];
+		} else {
+			var events = JSON.parse(localStorage.getItem('events'));
+		}
 		
 		var id;
 		for (id=1;id<10000;id++) {

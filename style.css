@@ -1,5 +1,13 @@
-body {padding:0; margin:0; background-color:#FFFFFF; font-size: 1em; font-family: 'Open Sans',sans-serif;}
-svg {display: block; position: absolute;}
+body {
+	padding:0;
+	margin:0;
+	background-color:#FFFFFF;
+	font-size: 1em;
+	font-family: 'Open Sans',sans-serif;
+	width: 100%;
+	height: 100%;
+}
+svg {position: absolute;}
 
 .logo {
 	position: relative;
@@ -8,27 +16,35 @@ svg {display: block; position: absolute;}
 }
 
 /* clock */
+.events {
+	width: 100vw; 
+    height: 100vw;
+    max-height: 100vh;
+    max-width: 100vh;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0; /* horizontal center */
+}
 #clock {
-	position: absolute;
+	display: block;
 	top: 0;
 	left: 0;
 }
-.monthLabel {
-	font-family: 'Open Sans',sans-serif;
-	fill: #000;
-	font-weight: 500;
-	opacity: 0.3;
+/* events */
+.events {
+	position: absolute;
 }
-.day { stroke: black; opacity: 0.6; }
-.arm { stroke: black; stroke-width: 2; }
-.centerDot { fill: black; }
 .eventLine { stroke: black; stroke-width: 2; }
 .eventWrapper {
+	display: block;
+	position: relative;
 	font-family: 'Open Sans',sans-serif;
 	font-weight: 400;
 }
 .eventLabel {
 	cursor: pointer;
+	white-space: nowrap;
 }
 .eventLabel:hover {
 	text-decoration: underline;

@@ -4,6 +4,7 @@
 <head>
 	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
+	<meta name="author" content="Jeroen Delcour">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 	<link rel="shortcut icon" href="favicon.ico">

@@ -4,30 +4,30 @@ var xlinkNS = "http://www.w3.org/1999/xlink";
 
 
 function init(wrapper, svg, def) {
-	var now = new Date();
-	
 	// these are the days of the week for each month, in order
 	var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 	var daysInYear = 365;
-
+	
+	var date = new Date(2014, 0);
 	// check for leap year
-	if ((now.year % 4 == 0 && now.year % 100 != 0) || now.year % 400 == 0){
+	if ((date.getFullYear() % 4 == 0 && date.getFullYear() % 100 != 0) || date.getFullYear() % 400 == 0){
 		daysInYear = 366;
 		daysInMonth[1] = 29;
 	}
 
-//	svg.setAttribute("width",window.innerWidth);
-//	svg.setAttribute("height",window.innerHeight);
-//	svg.setAttribute("viewBox", ""+0+" "+0+" "+window.innerWidth+" "+window.innerHeight+"");
-	
 	var centerX = 0.5;
 	var centerY = 0.5;
 	var radius = 0.4;
 	
-	drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now);
-	drawDays(svg, centerX, centerY, radius, daysInYear);
-	drawHand(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
-	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, now);
+	drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear);
+	var firstDayOfTheWeek = new Date(date.getFullYear(), 0, 1).getDay();
+	drawDays(svg, centerX, centerY, radius, daysInYear, firstDayOfTheWeek);
+	drawCenterDot(svg, centerX, centerY, radius);
+	var now = new Date();
+	if (date.getFullYear() === now.getFullYear()) {
+		drawHand(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
+	}
+	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date);
 	buildEventPopups(now);
 }
 
@@ -133,7 +133,7 @@ var style = {
 // draw functions //
 ////////////////////
 
-function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date) {
+function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear) {
 	// these are human-readable month name labels, in order
 	var monthsLabels = ['January', 'February', 'March', 'April',
 						 'May', 'June', 'July', 'August', 'September',
@@ -173,10 +173,11 @@ function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 }
 
 
-function drawDays(svg, centerX, centerY, radius, daysInYear) {
+function drawDays(svg, centerX, centerY, radius, daysInYear, startingDay) {
+	var dayOfTheWeek = startingDay;
 	for (var i=0; i < daysInYear; i++) {
-		var progressTmp = (i-0.5) / daysInYear;
-		var length = ((i-4) % 7 == 0 || (i-4) % 7 == 1) ? 2*style.day.length : style.day.length;
+		var progressTmp = (i+0.5) / daysInYear;
+		var length = (dayOfTheWeek == 0 || dayOfTheWeek == 6) ? 2*style.day.length : style.day.length;
 		var startX = centerX + Math.cos(progressTmp * 2*Math.PI+style.yearStartOffset) * (1-length) * (radius-style.outline.thickness/2);
 		var startY = centerY + Math.sin(progressTmp * 2*Math.PI+style.yearStartOffset) * (1-length) * (radius-style.outline.thickness/2);
 		var endX = centerX + Math.cos(progressTmp * 2*Math.PI+style.yearStartOffset) * radius;
@@ -186,8 +187,20 @@ function drawDays(svg, centerX, centerY, radius, daysInYear) {
 		endX = centerX + Math.cos(progressTmp * 2*Math.PI+style.yearStartOffset) * radius;
 		endY = centerY + Math.sin(progressTmp * 2*Math.PI+style.yearStartOffset) * radius;
 		drawSVGline(svg,startX,startY,endX,endY,style.day.thickness,style.day.color);
+		
+		dayOfTheWeek += 1;
+		if (dayOfTheWeek > 6) { dayOfTheWeek = 0 };
 	}
 }
+
+function drawCenterDot(svg, centerX, centerY, radius) {
+	var circle = document.createElementNS(svgNS,"circle");
+	circle.setAttribute("cx",centerX);
+	circle.setAttribute("cy",centerY);
+	circle.setAttribute("r",radius*0.03);
+	circle.setAttribute("class","centerDot");
+	svg.appendChild(circle);
+};
 
 function drawHand (svg, centerX, centerY, radius, daysInMonth, daysInYear, date) {
 	// calculate how far along in the year we are
@@ -203,14 +216,6 @@ function drawHand (svg, centerX, centerY, radius, daysInMonth, daysInYear, date)
 	var endX = centerX + Math.cos(todayTau*2*Math.PI+style.yearStartOffset) * length * radius * (1 - style.day.length - 0.04);
 	var endY = centerY + Math.sin(todayTau*2*Math.PI+style.yearStartOffset) * length * radius * (1 - style.day.length - 0.04);
 	drawSVGline(svg,startX,startY,endX,endY,style.hand.thickness,style.hand.color);
-	
-	// draw center dot
-	var circle = document.createElementNS(svgNS,"circle");
-	circle.setAttribute("cx",centerX);
-	circle.setAttribute("cy",centerY);
-	circle.setAttribute("r",radius*0.03);
-	circle.setAttribute("class","centerDot");
-	svg.appendChild(circle);
 }
 
 function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date) {
@@ -222,13 +227,13 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
 			events[i].start = new Date(events[i].start);
 			events[i].end = new Date(events[i].end);
-			if (events[i].end < new Date(2014,09,01) && events[i].end >= new Date(2014,06,01)) {
+			if (events[i].end < new Date(date.getFullYear(),09,01) && events[i].end >= new Date(date.getFullYear(),06,01)) {
 				ll.push(events[i]);
-			} else if (events[i].end < new Date(2014,06,01) && events[i].end >= new Date(2014,03,01)) {
+			} else if (events[i].end < new Date(date.getFullYear(),06,01) && events[i].end >= new Date(date.getFullYear(),03,01)) {
 				lr.push(events[i]);
-			} else if (events[i].end < new Date(2015,00,01) && events[i].end >= new Date(2014,09,01)) {
+			} else if (events[i].end < new Date(date.getFullYear()+1,00,01) && events[i].end >= new Date(date.getFullYear(),09,01)) {
 				ul.push(events[i]);
-			} else if (events[i].end < new Date(2014,03,01) && events[i].end >= new Date(2014,00,01)) {
+			} else if (events[i].end < new Date(date.getFullYear(),03,01) && events[i].end >= new Date(date.getFullYear(),00,01)) {
 				ur.push(events[i]);
 			}
 		}
@@ -237,21 +242,6 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		ul.sort(function (a,b) { return a.end - b.end; });
 		ur.sort(function (a,b) { return b.end - a.end; });
 		events = ll.concat(lr,ul,ur);
-		/*
-		events.sort(function (a,b) { // sort events for bounding box purposes
-			if (a.end < new Date(2014,09,01) && a.end >= new Date(2014,06,01) && b.end < new Date(2014,09,01) && b.end >= new Date(2014,06,01)) {
-				console.log(a.name+", "+b.name);
-				return b.end - a.end;
-			} else if (a.end < new Date(2014,06,01) && a.end >= new Date(2014,03,01) && b.end < new Date(2014,06,01) && b.end >= new Date(2014,03,01)) {
-				return a.end - b.end;
-			} else if (a.end < new Date(2015,00,01) && a.end >= new Date(2014,09,01) && b.end < new Date(2015,00,01) && b.end >= new Date(2014,09,01)) {
-				return b.end - a.nd;
-			} else if (a.end < new Date(2014,03,01) && a.end >= new Date(2014,00,01) && b.end < new Date(2014,03,01) && b.end >= new Date(2014,00,01)) {
-				return a.end - b.end;
-			} else {
-				return 0;
-		}});
-		*/
 		// For bounding box purposes:
 		// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
 		var march31Y = centerY + Math.sin(dateToTau(2, 31, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;

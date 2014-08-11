@@ -25,22 +25,25 @@ function saveEvents() {
 */
 </script>
 
-<svg width="100%" height="100%" viewBox="0 0 500 500"
+<svg width="100%" height="100%" viewBox="0 0 1 1"
      xmlns="http://www.w3.org/2000/svg" 
      xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <path id="MyPath" d="
-    M 100,200
-    A 150,200 0 0,1 450,500"/>
-  </defs>
+    <marker id="markerCircle" markerWidth="8" markerHeight="8" refx="5" refy="5">
+        <circle cx="5" cy="5" r="3" style="stroke: none; fill:#000000;"/>
+    </marker>
 
-  <use xlink:href="#MyPath" fill="none" stroke="red" stroke-width="1"  />
+    <marker id="markerArrow" refx="0.02" refy="0.06"
+           orient="auto">
+        <path d="M0.02,0.02 L0.02,0.11 L0.10,0.06 L0.02,0.02" style="fill: #000000;" />
+    </marker>
+</defs>
 
-  <text font-family="Verdana" font-size="42.5">
-    <textPath xlink:href="#MyPath">
-      The wheels of the bus go round and round
-    </textPath>
-  </text>
+<path d="M1,0.1 L1.5,0.1 L1.5,0.6"
+      style="       marker-end: url(#markerArrow);
+                 "
+
+        />
 </svg>
 </body>
 </html>

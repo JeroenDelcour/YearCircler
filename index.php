@@ -37,14 +37,32 @@
 <body>
 
 <img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
+<div id="clock"></div>
 
-<svg id="clock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox='0 0 1 1'>
-	<defs id="defs">
-	</defs>
-</svg>
+<div class="menuContainer" id="yearButtons"><div class="yearButton" id="prevYear">Previous year</div><div class="yearButton" id="nextYear">Next year</div></div>
+
+<?php include('addEventForm.php') ?>
 
 <script>
-	init(document.getElementById("clockWrapper"), document.getElementById("clock"), document.getElementById("defs")); // initialize clock, passing SVG and def elements names as arguments
+	var year = new Date().getFullYear();
+	init(document.getElementById("clock"), year); // initialize clock, passing SVG and def elements names as arguments
+	
+	document.getElementById('yearButtons').style.backgroundColor = style.month.colors2[new Date().getMonth()];
+	
+	document.getElementById("nextYear").addEventListener("click", function(){
+		year++;
+		redrawClock(year);},false);
+	document.getElementById("prevYear").addEventListener("click", function(){
+		year--;
+		redrawClock(year);},false);
+	
+	function redrawClock(year) {
+		var el = document.getElementById("clock");
+		while (el.firstChild) {
+			el.removeChild(el.firstChild);
+		}
+		init(document.getElementById("clock"), year);
+	}
 </script>
 
 <script>
@@ -83,8 +101,6 @@
 		return newStr = Number(str.replace('%', ''));
 	}
 </script>
-
-<?php include('addEventForm.php') ?>
 
 </body>
 </html>

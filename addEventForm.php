@@ -53,6 +53,6 @@
 		};
 		events.push(newEvent);
 		localStorage.setItem('events', JSON.stringify(events));
-		location.reload();
+		redrawClock(year);
 	}
 </script>

@@ -1,14 +1,12 @@
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 
-
-
-function init(wrapper, svg, def) {
+function init(wrapper, year) {
 	// these are the days of the week for each month, in order
 	var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 	var daysInYear = 365;
 	
-	var date = new Date(2014, 0);
+	var date = new Date(year, 0);
 	// check for leap year
 	if ((date.getFullYear() % 4 == 0 && date.getFullYear() % 100 != 0) || date.getFullYear() % 400 == 0){
 		daysInYear = 366;
@@ -19,16 +17,153 @@ function init(wrapper, svg, def) {
 	var centerY = 0.5;
 	var radius = 0.4;
 	
-	drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear);
+	var svg = buildSVGelem(wrapper);
+	var defs = buildDefElem(svg);
+	
+	drawMonths(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear);
 	var firstDayOfTheWeek = new Date(date.getFullYear(), 0, 1).getDay();
 	drawDays(svg, centerX, centerY, radius, daysInYear, firstDayOfTheWeek);
+	drawIndicator(svg, centerX, centerY, radius, date);
 	drawCenterDot(svg, centerX, centerY, radius);
 	var now = new Date();
 	if (date.getFullYear() === now.getFullYear()) {
 		drawHand(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
 	}
-	drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date);
+	
+	var overlay = buildOverlay(wrapper);
+//	drawNavButtonsDIVS(centerX, centerY, overlay);
+	drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, overlay);
 	buildEventPopups(now);
+}
+
+function drawIndicator(svg, centerX, centerY, radius, date) {
+	var text = drawSVGtext(centerX,centerY,date.getFullYear(),"black","end","sans-serif",0.1);
+	text.setAttribute("font-size", radius*0.35);
+	svg.appendChild(text);
+}
+
+function drawNavButtons(svg, def, centerX, centerY, radius, date){
+
+	var x1 = centerX + radius * 0.8 * Math.cos(0.005*2*Math.PI + style.yearStartOffset);
+	var y1 = centerY + radius * 0.8 * Math.sin(0.005*2*Math.PI + style.yearStartOffset);
+	var x2 = centerX + radius * 0.8 * Math.cos(0.07*2*Math.PI + style.yearStartOffset);
+	var y2 = centerY + radius * 0.8 * Math.sin(0.07*2*Math.PI + style.yearStartOffset);
+	var x3 = centerX + radius * 0.75 * Math.cos(0.08*2*Math.PI + style.yearStartOffset);
+	var y3 = centerY + radius * 0.75 * Math.sin(0.08*2*Math.PI + style.yearStartOffset);
+	var x4 = centerX + radius * 0.7 * Math.cos(0.07*2*Math.PI + style.yearStartOffset);
+	var y4 = centerY + radius * 0.7 * Math.sin(0.07*2*Math.PI + style.yearStartOffset);
+	var x5 = centerX + radius * 0.7 * Math.cos(0.005*2*Math.PI + style.yearStartOffset);
+	var y5 = centerY + radius * 0.7 * Math.sin(0.005*2*Math.PI + style.yearStartOffset);
+	var path = document.createElementNS(svgNS,"path");
+	path.setAttribute("d","M"+x1+","+y1+" A"+radius*0.8+","+radius*0.8+",0,0,1,"+x2+","+y2+" L"+x3+","+y3+" L"+x4+","+y4+" A"+radius*0.7+","+radius*0.7+",0,0,0,"+x5+","+y5+" Z");
+//	path.setAttribute("stroke", style.month.colors2[date.getMonth()]);
+	path.setAttribute("fill", style.month.colors2[date.getMonth()]);
+	path.setAttribute("stroke-width", "0.01");
+	path.addEventListener("click", function(){
+		toYear(this, date.getFullYear()+1);},false);
+	svg.appendChild(path);
+	
+	
+	function toYear(initiator, year) {
+		var el = document.getElementById("clock").children[0];
+	//	var el2 = document.getElementById("clock").children[1];
+		el.parentNode.removeChild(el);
+	//	el.parentNode.removeChild(el2);
+		init(document.getElementById("clock"), year);
+	}
+	
+	/*
+	var marker = document.createElementNS(svgNS, 'marker');
+	marker.setAttribute('id', 'markerArrow');
+	marker.setAttribute('refX', '0.02');
+	marker.setAttribute('refY', '0.06');
+	marker.setAttribute('orient', 'auto');
+	var markerPath = document.createElementNS(svgNS, 'path');
+	markerPath.setAttribute("d", "M0.02,0.02 L0.02,0.11 L0.10,0.06 L0.02,0.02");
+	markerPath.setAttribute("fill", "black");
+	def.appendChild(marker);
+	
+	var path = drawSVGarc(centerX,centerY,radius*0.80,0,0.08,0.05,"orange");
+	path.style = "marker-end: url(#markerArrow);";
+	path.addEventListener("click",function(){alert('hello world!')},false);
+	svg.appendChild(path);
+	
+	createDefPath(def, centerX, centerY, radius*0.75, 0, 0.06, "navNext");
+	
+	var use = document.createElementNS(svgNS, "use");
+	use.setAttributeNS(null, "stroke", "red");
+	use.setAttributeNS(null, "stroke-width", "0.01");
+	use.setAttributeNS(xlinkNS, "href", "#navNext");
+	svg.appendChild(use);
+	
+	var text = drawSVGtext(0,0,"","black","middle",1);
+	text.setAttribute("font-size", style.month.fontSize*radius);
+	var textPath = document.createElementNS(svgNS,"textPath");
+	textPath.setAttributeNS(xlinkNS, "href", "#navNext");
+	textPath.setAttribute("startOffset","50%");
+	textPath.textContent = "Next";
+	text.appendChild(textPath);
+//	svg.appendChild(text);
+	*/
+}
+
+function drawNavButtonsDIVS(centerX, centerY, overlay) {
+	
+	var wrapper = document.createElement('div');
+	wrapper.className = "navButtons";
+	var left = document.createElement('div');
+	left.className = "left";
+	var right = document.createElement('div');
+	right.className = "right";
+	var arrowRight = document.createElement('div');
+	arrowRight.className = "arrowRight";
+	right.appendChild(arrowRight);
+	wrapper.appendChild(left);
+	wrapper.appendChild(right);
+	overlay.appendChild(wrapper);
+	
+/*
+	var next = document.createElement("div");
+	next.className = "nav next";
+	next.style.top = (centerY - radius * 0.8 )* 100 +"%";
+	next.style.left = (centerX + radius * 0.01 )* 100 +"%";
+	overlay.appendChild(next);
+	
+	var prev = document.createElement("div");
+	prev.className = "nav prev";
+	var positioner = document.createElement("div");
+	positioner.style.width = (centerX - radius * 0.01 )* 100 +"%";
+	positioner.style.top = (centerY - radius * 0.8 )* 100 +"%";
+	positioner.className = "navPrevPositioner";
+	positioner.appendChild(prev);
+	overlay.appendChild(positioner);
+*/
+}
+
+function buildOverlay(wrapper) {
+	var overlay = document.createElement("div");
+	overlay.className = "overlay";
+	wrapper.appendChild(overlay);
+	return overlay;
+}
+
+function buildSVGelem(wrapper) {
+	var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	svg.setAttributeNS(null, "preserveAspectRatio", "xMidYMid meet");
+	svg.setAttributeNS(null, "width", "100%");
+	svg.setAttributeNS(null, "height", "100%");
+	svg.setAttributeNS(null, "viewBox", "0 0 1 1");
+	svg.id = "clock";
+	wrapper.appendChild(svg);
+	return svg;
+}
+
+function buildDefElem(svg) {
+	var defs = document.createElement('defs');
+	defs.id = "defs";
+	svg.appendChild(defs);
+	return defs;
 }
 
 function buildEventPopups(date) {
@@ -74,7 +209,7 @@ function deleteEvent() {
 			return el.id != eventid;
 	});
 	localStorage.setItem('events', JSON.stringify(newArray));
-	location.reload();
+	redrawClock(year);	
 	}
 }
 
@@ -218,7 +353,7 @@ function drawHand (svg, centerX, centerY, radius, daysInMonth, daysInYear, date)
 	drawSVGline(svg,startX,startY,endX,endY,style.hand.thickness,style.hand.color);
 }
 
-function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date) {
+function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear, date, overlay) {
 	if (events = JSON.parse(localStorage.getItem('events'))) {
 		var ll = [];
 		var lr = [];
@@ -227,13 +362,15 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
 			events[i].start = new Date(events[i].start);
 			events[i].end = new Date(events[i].end);
-			if (events[i].end < new Date(date.getFullYear(),09,01) && events[i].end >= new Date(date.getFullYear(),06,01)) {
+			midDate = new Date((events[i].start.getTime() + events[i].end.getTime()) / 2);
+			events[i].midDate = midDate;
+			if (midDate < new Date(date.getFullYear(),09,01) && midDate >= new Date(date.getFullYear(),06,01)) {
 				ll.push(events[i]);
-			} else if (events[i].end < new Date(date.getFullYear(),06,01) && events[i].end >= new Date(date.getFullYear(),03,01)) {
+			} else if (midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
 				lr.push(events[i]);
-			} else if (events[i].end < new Date(date.getFullYear()+1,00,01) && events[i].end >= new Date(date.getFullYear(),09,01)) {
+			} else if (midDate < new Date(date.getFullYear()+1,00,01) && midDate >= new Date(date.getFullYear(),09,01)) {
 				ul.push(events[i]);
-			} else if (events[i].end < new Date(date.getFullYear(),03,01) && events[i].end >= new Date(date.getFullYear(),00,01)) {
+			} else if (midDate < new Date(date.getFullYear(),03,01) && midDate >= new Date(date.getFullYear(),00,01)) {
 				ur.push(events[i]);
 			}
 		}
@@ -246,11 +383,6 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 		// Defines the point at which overlapping events should go up or down to get out of the way of the previously drawn event
 		var march31Y = centerY + Math.sin(dateToTau(2, 31, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;
 		var october1Y = centerY + Math.sin(dateToTau(9, 1, daysInMonth, daysInYear)*2*Math.PI+style.yearStartOffset) * radius;
-		
-		// create div alongside main svg element to put all event divs in
-		var eventsElem = document.createElement("div");
-		eventsElem.className = "events";
-		svg.parentNode.appendChild(eventsElem);
 
 		for (i=0; i < events.length; i++) {
 			var progressStart = dateToTau(events[i].start.getMonth(), events[i].start.getDate(), daysInMonth, daysInYear);
@@ -268,6 +400,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 				progressEnd += 0.25/daysInYear;
 				// draw segment
 				var arc = drawSVGarc(centerX,centerY,radius*1.01,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
+				arc.setAttribute("fill", "none");
 				svg.appendChild(arc);
 				var progressTmp = (progressStart+progressEnd)/2;
 			};
@@ -312,10 +445,10 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 				div.setAttribute("eventid", events[i].id);
 				div.appendChild(label);
 			}
-			eventsElem.appendChild(div);
+			overlay.appendChild(div);
 			var BBox = {"x": divX, "y": y, "width": div.offsetWidth/window.innerWidth, "height": div.offsetHeight/window.innerHeight};
 			
-			if (events[i].start.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
+			if (events[i].midDate.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
 				if (BBox.y + BBox.height > march31Y) {
 					var dY = Math.abs(BBox.y + BBox.height - march31Y);
 					endY -= dY;
@@ -323,7 +456,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 					BBox.y -= dY;
 				}
 			}
-			else if (events[i].start.getMonth() >= 10 && BBox.y + BBox.height > october1Y) { // if in upper left quarter, make sure it doesn't overlap with events in the lower left quarter around the september-october border
+			else if (events[i].midDate.getMonth() >= 10 && BBox.y + BBox.height > october1Y) { // if in upper left quarter, make sure it doesn't overlap with events in the lower left quarter around the september-october border
 				var dY = Math.abs(BBox.y + BBox.height - october1Y);
 				endY -= dY;
 				div.style.top = endY * 100 + "%";

@@ -7,16 +7,14 @@ body {
 	width: 100%;
 	height: 100%;
 }
-svg {position: absolute;}
+svg {position: absolute; display: block; top: 0; left: 0;}
 
 .logo {
 	position: relative;
-	margin: 10px;
+	margin: 20px;
 	float: left;
 }
-
-/* clock */
-.events {
+.overlay {
 	width: 100vw; 
     height: 100vw;
     max-height: 100vh;
@@ -26,15 +24,7 @@ svg {position: absolute;}
     top:0;bottom:0; /* vertical center */
     left:0;right:0; /* horizontal center */
 }
-#clock {
-	display: block;
-	top: 0;
-	left: 0;
-}
 /* events */
-.events {
-	position: absolute;
-}
 .eventLine { stroke: black; stroke-width: 2; }
 .eventWrapper {
 	display: block;
@@ -59,6 +49,8 @@ svg {position: absolute;}
 	padding: 2px 4px 2px 4px;
 	box-shadow: 2px 2px 5px #888888;
 	font-size: 0.8em;
+	margin-left: auto;
+	margin-right: auto;
 }
 .eventPopup:after {
 	content: "";
@@ -86,7 +78,46 @@ svg {position: absolute;}
 	background-color: #EEE;
 	background-image: linear-gradient(#AAA, #FFF);
 }
+/* nav buttons */
+.navButtons {
+	margin-left: auto;
+	margin-right: auto;
+	width: 15%;
+	height: 5%;
+	margin-top: 2.5%;
+}
+.navButtons .left {
+	width: 45%;
+	height: 100%;
+	float: left;
+}
+.navButtons .right {
+	width: 45%;
+	height: 100%;
+	float: right;
+}
+.arrowRight {
+	width: 0; 
+	height: 0; 
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	
+	border-left: 15px solid black;
+}
 
+.yearButton {
+	position: relative;
+	float: left;
+	padding: 10px;
+	cursor: pointer;
+	font-weight: 500;
+}
+.yearButton:active {
+	opacity: 0.6;
+}
+#nextYear {
+	border-left: 1px solid black;
+}
 /* 'add event' form */
 .menuContainer {
 	position: relative;
@@ -109,12 +140,6 @@ svg {position: absolute;}
 	user-select: none;
 	box-shadow: 2px 2px 5px #888888;
 }
-.menuButton {
-	position: relative;
-	padding: 10px;
-	cursor: pointer;
-	font-weight: 500;
-}
 .menuButton:before {
 	content: "";
 	display: inline-block;
@@ -125,6 +150,15 @@ svg {position: absolute;}
 	border-top: 0.5em solid black;
 	border-left: 0.5em solid transparent;
 	border-right: 0.5em solid transparent;
+}
+.menuButton {
+	position: relative;
+	padding: 10px;
+	cursor: pointer;
+	font-weight: 500;
+}
+.menuButton:active {
+	opacity: 0.6;
 }
 /*
 .menuButton:before {

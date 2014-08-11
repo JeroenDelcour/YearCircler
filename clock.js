@@ -162,7 +162,7 @@ function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 	function drawMonthLabel() {
 		createDefPath(def,centerX,centerY,radius*(1-style.month.thickness+0.03),begin,end,monthsLabels[i]); // create path for label to follow, so that it curves with the clock
 		var text = drawSVGtext(0,0,"","black","middle",style.month.fontFamily,style.month.opacity); // create the text element
-		text.setAttribute("style", "font-size: "+style.month.fontSize*radius+";"); // set font size relative to radius
+		text.setAttribute("font-size", style.month.fontSize*radius); // set font size relative to radius
 		var textPath = document.createElementNS(svgNS,"textPath"); // append link to path created earlier
 		textPath.setAttributeNS(xlinkNS, "href", "#"+monthsLabels[i]);
 		textPath.setAttribute("startOffset","50%");

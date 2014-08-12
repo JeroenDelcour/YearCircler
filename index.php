@@ -38,7 +38,15 @@
 
 <div id="clock"></div>
 
-<?php include('header.php') ?>
+<div class="header">
+	<div class="headerLeft">
+		<a href="http://192.168.1.120/year-clock/" class="logo"></a>
+	</div>
+	<div class="headerRight">
+		<a href="http://192.168.1.120/year-clock/about/" class="headerButton">ABOUT</a>
+		<a href="http://192.168.1.120/year-clock/" class="headerButton">HOME</a>
+	</div>
+</div>
 
 <div class="menuContainer" id="yearButtons"><div class="yearButton" id="prevYear">Previous year</div><div class="yearButton" id="nextYear">Next year</div></div>
 

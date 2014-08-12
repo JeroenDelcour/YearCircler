@@ -9,7 +9,7 @@
 		<input type="text" name="end" id="addEventEnd" class="datepicker" autocomplete="off" placeholder="End date (if multi-day event)"/>
 		<input type="hidden" name="endalt" id="endAlt"/>
 		<br/>
-		<input type="submit" id="addEventSubmit" class="submitIdle"></input>
+		<input type="submit" id="addEventSubmit" class="submitIdle" value="Submit"></input>
 	</form>
 </div>
 

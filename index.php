@@ -36,8 +36,15 @@
 </head>
 <body>
 
-<img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
 <div id="clock"></div>
+
+<div class="headerLeft">
+	<img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
+</div>
+<div class="headerRight">
+	<a href="/about" class="headerButton">ABOUT</a>
+	<a href="/blog" class="headerButton">BLOG</a>
+</div>
 
 <div class="menuContainer" id="yearButtons"><div class="yearButton" id="prevYear">Previous year</div><div class="yearButton" id="nextYear">Next year</div></div>
 
@@ -64,43 +71,5 @@
 		init(document.getElementById("clock"), year);
 	}
 </script>
-
-<script>
-	function rearrangeEvents() {
-		console.log("Rearranging");
-		for (i=0;i<events.length;i++) {
-			//var BBox = div.getBBox();
-			if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER!
-				events[i].BBox.width = events[i].el.offsetWidth/window.innerWidth;
-				events[i].BBox.height = events[i].el.offsetWidth/window.innerHeight;
-				var BBox = events[i].BBox;
-				var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-				if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 10) { // check if event sits in upper half of clock
-					if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
-						var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
-						console.log(events[i].el.style.top);
-						events[i].el.style.top = removePercentageSign(events[i].el.style.top) - dY + "%";
-						console.log(events[i].el.style.top);
-						BBox.y -= dY;
-					}
-				} else if (events[i].start.getMonth() <= 9 && events[i].start.getMonth() >= 4 // if event sits in lower half
-						&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
-					var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
-					console.log(events[i].el.style.top);
-					events[i].el.style.top = removePercentageSign(events[i].el.style.top) + dY + "%";
-					console.log(events[i].el.style.top);
-					BBox.y += dY;
-				}
-			}
-		}
-	}
-//	window.addEventListener('resize', rearrangeEvents);
-	
-	function removePercentageSign(str) {
-		str = str.toString();
-		return newStr = Number(str.replace('%', ''));
-	}
-</script>
-
 </body>
 </html>

@@ -9,11 +9,52 @@ body {
 }
 svg {position: absolute; display: block; top: 0; left: 0;}
 
+.headerLeft, .headerRight {
+	position: relative;
+	float: left;
+	height: 63px;
+	width: 20%;
+}
+.headerRight {
+	float: right;
+}
+.headerLeft:after, .headerRight:after {
+	content: "";
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 1px;
+}
+.headerLeft:after {
+	background-image: linear-gradient(to right, black, rgba(255,255,255,0));
+}
+.headerRight:after {
+	background-image: linear-gradient(to left, black, rgba(255,255,255,0));
+}
 .logo {
 	position: relative;
-	margin: 20px;
+	display: block;
 	float: left;
+	margin: 8px;
 }
+.headerButton {
+	float: right;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-right: 8%;
+	color: black;
+	text-decoration: none;
+}
+.headerButton:hover {
+	text-decoration: underline;
+}
+.headerButton:active {
+	text-decoration: underline;
+}
+
+/* events overlay */
 .overlay {
 	width: 100vw; 
     height: 100vw;
@@ -42,33 +83,42 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 .eventPopup {
 	position: relative;
 	z-index: 1;
-	width: 100px;
-	height: 28px;
+	min-width: 100px;
+	display: inline-block;
 	text-align: left;
 	border-radius: 6px;
-	padding: 2px 4px 2px 4px;
+	/*padding: 2px 4px 2px 4px;*/
 	box-shadow: 2px 2px 5px #888888;
 	font-size: 0.8em;
 	margin-left: auto;
 	margin-right: auto;
+	border: 1px solid black;
 }
-.eventPopup:after {
+.eventPopup:before {
 	content: "";
-	display: block;
-	width: 0;
-	height: 0;
-	margin-left: 48px; /* 50 - (4/2) */
-	margin-top: -34px; /* 28 + 4 + (4/2) */
+	position: absolute;
+	top: -4px;
+	left: 50%;
 	border-bottom: 4px solid black;
-	border-color: inherit;
+	border-top-color: inherit; 
 	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
+	border-right: 4px solid transparent; 
+}
+.eventPopup .dateDisplay {
+	padding: 5px 10px 5px 10px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
 }
 .eventPopup button {
+	display: block;
 	padding: 4px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2%;
+	margin-bottom: 2%;
 	border-radius: 3px;
 	border: none;
-	width: 100%;
+	width: 96%;
 	box-sizing: border-box;
 	background-color: white;
 	background-image: linear-gradient(#FFF, #AAA);
@@ -78,47 +128,8 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	background-color: #EEE;
 	background-image: linear-gradient(#AAA, #FFF);
 }
-/* nav buttons */
-.navButtons {
-	margin-left: auto;
-	margin-right: auto;
-	width: 15%;
-	height: 5%;
-	margin-top: 2.5%;
-}
-.navButtons .left {
-	width: 45%;
-	height: 100%;
-	float: left;
-}
-.navButtons .right {
-	width: 45%;
-	height: 100%;
-	float: right;
-}
-.arrowRight {
-	width: 0; 
-	height: 0; 
-	border-top: 15px solid transparent;
-	border-bottom: 15px solid transparent;
-	
-	border-left: 15px solid black;
-}
 
-.yearButton {
-	position: relative;
-	float: left;
-	padding: 10px;
-	cursor: pointer;
-	font-weight: 500;
-}
-.yearButton:active {
-	opacity: 0.6;
-}
-#nextYear {
-	border-left: 1px solid black;
-}
-/* 'add event' form */
+/* buttons */
 .menuContainer {
 	position: relative;
 	float: left;
@@ -139,7 +150,34 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	-ms-user-select: none;
 	user-select: none;
 	box-shadow: 2px 2px 5px #888888;
+	border: 1px solid black;
 }
+/* year navigation buttons */
+#yearButtons {
+	bottom: 0;
+	margin-bottom:1.25em;
+	position: absolute;
+}
+.yearButton {
+	position: relative;
+	float: left;
+	font-size: 0.8em;
+	padding: 0.3em 0 0.3em 0;
+	width: 8em;
+	cursor: pointer;
+	font-weight: 500;
+	text-align: center;
+}
+.yearButton:active {
+	opacity: 0.6;
+}
+#prevYear {
+	border-right: 1px solid black;
+}
+#nextYear {
+	border-left: 1px solid black;
+}
+/* 'add event' form */
 .menuButton:before {
 	content: "";
 	display: inline-block;
@@ -156,9 +194,6 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	padding: 10px;
 	cursor: pointer;
 	font-weight: 500;
-}
-.menuButton:active {
-	opacity: 0.6;
 }
 /*
 .menuButton:before {

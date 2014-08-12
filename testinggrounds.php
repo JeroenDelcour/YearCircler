@@ -25,25 +25,40 @@ function saveEvents() {
 */
 </script>
 
-<svg width="100%" height="100%" viewBox="0 0 1 1"
+<svg width="100%" height="100%" viewBox="0 0 500 500"
      xmlns="http://www.w3.org/2000/svg" 
      xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <marker id="markerCircle" markerWidth="8" markerHeight="8" refx="5" refy="5">
-        <circle cx="5" cy="5" r="3" style="stroke: none; fill:#000000;"/>
-    </marker>
+    <path id="MyPath" d="
+    M 100,200
+    A 150,200 0 0,1 450,500"/>
+  </defs>
 
-    <marker id="markerArrow" refx="0.02" refy="0.06"
-           orient="auto">
-        <path d="M0.02,0.02 L0.02,0.11 L0.10,0.06 L0.02,0.02" style="fill: #000000;" />
-    </marker>
-</defs>
+  <use xlink:href="#MyPath" fill="none" stroke="red" stroke-width="1"  />
 
-<path d="M1,0.1 L1.5,0.1 L1.5,0.6"
-      style="       marker-end: url(#markerArrow);
-                 "
+  <text font-family="Verdana" font-size="42.5">
+    <textPath xlink:href="#MyPath">
+      The wheels of the bus go round and round
+    </textPath>
+  </text>
+</svg>
 
-        />
+<svg width="100%" height="100%" viewBox="0 0 5 5"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <path id="MyPath2" d="
+    M 1,2
+    A 1.5,2 0 0,1 4.5,5"/>
+  </defs>
+
+  <use xlink:href="#MyPath2" fill="none" stroke="red" stroke-width="0.01"  />
+
+  <text font-family="Verdana" font-size="0.425">
+    <textPath xlink:href="#MyPath2">
+      The wheels of the bus go round and round
+    </textPath>
+  </text>
 </svg>
 </body>
 </html>

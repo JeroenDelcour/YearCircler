@@ -176,8 +176,16 @@ function buildEventPopups(date) {
 		var div = document.createElement('div');
 		div.className = "eventPopup";
 		div.style.backgroundColor = colorOfTheMonth;
-		div.style.borderColor = colorOfTheMonth;
 		div.style.display = "none";
+		var dateDisplay = document.createElement('div');
+		var arrayid = eventWrappers[i].getAttribute("arrayid");
+		var event = events[arrayid];
+		dateDisplay.innerHTML = style.dayLabels[event.start.getDay()]+" "+event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()];
+		if (event.start - event.end != 0) {
+			dateDisplay.innerHTML += " - "+style.dayLabels[event.end.getDay()]+" "+event.end.getDate()+" "+style.monthsLabels[event.end.getMonth()];
+		}
+		dateDisplay.className = "dateDisplay";
+		div.appendChild(dateDisplay);
 		eventWrappers[i].appendChild(div);
 		var button = document.createElement('button');
 		button.innerHTML = "Delete event";
@@ -190,9 +198,9 @@ function switchPopup() {
 	popup = this.parentNode.children[1];
 	switch(popup.style.display) {
 		case "none":
-			popup.style.display = "block";
+			popup.style.display = "inline-block";
 			break;
-		case "block":
+		case "inline-block":
 			popup.style.display = "none";
 			break;
 		default:
@@ -262,6 +270,10 @@ var style = {
 		thickness: 0.003,
 		color: "black",
 	},
+	monthsLabels: ['January', 'February', 'March', 'April',
+						 'May', 'June', 'July', 'August', 'September',
+						 'October', 'November', 'December'],
+	dayLabels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 }
 
 ////////////////////
@@ -270,9 +282,6 @@ var style = {
 
 function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear) {
 	// these are human-readable month name labels, in order
-	var monthsLabels = ['January', 'February', 'March', 'April',
-						 'May', 'June', 'July', 'August', 'September',
-						 'October', 'November', 'December'];
 	var thicknessAbs = style.month.thickness * radius;
 	
 	var beginDay = 0;
@@ -295,13 +304,13 @@ function drawMonths(svg, def, centerX, centerY, radius, daysInMonth, daysInYear)
 	}
 	
 	function drawMonthLabel() {
-		createDefPath(def,centerX,centerY,radius*(1-style.month.thickness+0.03),begin,end,monthsLabels[i]); // create path for label to follow, so that it curves with the clock
+		createDefPath(def,centerX,centerY,radius*(1-style.month.thickness+0.03),begin,end,style.monthsLabels[i]); // create path for label to follow, so that it curves with the clock
 		var text = drawSVGtext(0,0,"","black","middle",style.month.fontFamily,style.month.opacity); // create the text element
 		text.setAttribute("font-size", style.month.fontSize*radius); // set font size relative to radius
 		var textPath = document.createElementNS(svgNS,"textPath"); // append link to path created earlier
-		textPath.setAttributeNS(xlinkNS, "href", "#"+monthsLabels[i]);
+		textPath.setAttributeNS(xlinkNS, "href", "#"+style.monthsLabels[i]);
 		textPath.setAttribute("startOffset","50%");
-		textPath.textContent = monthsLabels[i];
+		textPath.textContent = style.monthsLabels[i];
 		text.appendChild(textPath);
 		svg.appendChild(text);
 	}
@@ -434,6 +443,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 				wrapper.style.cssFloat = "right";
 				wrapper.style.textAlign = "right";
 				wrapper.setAttribute("eventid", events[i].id);
+				wrapper.setAttribute("arrayid", i);
 				wrapper.appendChild(label);
 				var divX = 0;
 				div.style.width = x*100 + "%";
@@ -443,6 +453,7 @@ function drawEvents(svg, def, centerX, centerY, radius, daysInMonth, daysInYear,
 				div.style.left = x*100 + "%";
 				div.className = "eventWrapper";
 				div.setAttribute("eventid", events[i].id);
+				div.setAttribute("arrayid", i);
 				div.appendChild(label);
 			}
 			overlay.appendChild(div);

@@ -1,0 +1,56 @@
+.header {
+	font-size: 16px;
+}
+.headerLeft, .headerRight {
+	position: relative;
+	height: 63px;
+	width: 20%;
+}
+.headerLeft {
+	float: left;
+}
+.headerRight {
+	float: right;
+}
+.headerLeft:after, .headerRight:after {
+	content: "";
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 1px;
+}
+.headerLeft:after {
+	background-image: linear-gradient(to right, black, rgba(255,255,255,0));
+}
+.headerRight:after {
+	background-image: linear-gradient(to left, black, rgba(255,255,255,0));
+}
+.logo {
+	position: relative;
+	display: block;
+	float: left;
+	margin: 8px;
+	background-image:url(http://192.168.1.120/year-clock/images/logo.png);
+	background-repeat: no-repeat;
+	width: 180px;
+	height: 47px;
+}
+.headerButton {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	color: black;
+	text-decoration: none;
+}
+.headerLeft .headerButton {
+	float: left;
+	margin-left: 8%;
+}
+.headerRight .headerButton {
+	float: right;
+	margin-right: 8%;
+}
+.headerButton:hover {
+	opacity: 0.6;
+}

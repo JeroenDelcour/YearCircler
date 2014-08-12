@@ -5,12 +5,12 @@
 	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
 	<meta name="author" content="Jeroen Delcour">
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,500' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="shortcut icon" href="images/favicon.ico">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 	<link href='style.css' rel='stylesheet' type='text/css'>
+	<link href='header.css' rel='stylesheet' type='text/css'>
 	<script src="clock.js"></script>
 	<script>
 	$(function() {
@@ -38,13 +38,7 @@
 
 <div id="clock"></div>
 
-<div class="headerLeft">
-	<img class="logo" src="logo2.png" alt="Year Circler - plan your year"/>
-</div>
-<div class="headerRight">
-	<a href="/about" class="headerButton">ABOUT</a>
-	<a href="/blog" class="headerButton">BLOG</a>
-</div>
+<?php include('header.php') ?>
 
 <div class="menuContainer" id="yearButtons"><div class="yearButton" id="prevYear">Previous year</div><div class="yearButton" id="nextYear">Next year</div></div>
 

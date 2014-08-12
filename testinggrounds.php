@@ -11,7 +11,7 @@
 <body>
 <?php // require('getEvents.php') ?>
 <script>
-/*
+
 function saveEvents() {
 	var events = <?=$events?>;
 	for(i=0;i<events.length;i++) { // convert old manual date format to proper JavaScript Date object
@@ -22,7 +22,7 @@ function saveEvents() {
 	}
 	localStorage.setItem('events', JSON.stringify(events));
 }
-*/
+saveEvents();
 </script>
 
 <svg width="100%" height="100%" viewBox="0 0 500 500"

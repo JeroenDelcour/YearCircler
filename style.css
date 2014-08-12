@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 body {
 	padding:0;
 	margin:0;
@@ -8,51 +10,6 @@ body {
 	height: 100%;
 }
 svg {position: absolute; display: block; top: 0; left: 0;}
-
-.headerLeft, .headerRight {
-	position: relative;
-	float: left;
-	height: 63px;
-	width: 20%;
-}
-.headerRight {
-	float: right;
-}
-.headerLeft:after, .headerRight:after {
-	content: "";
-	position: absolute;
-	bottom: -1px;
-	left: 0;
-	right: 0;
-	height: 1px;
-}
-.headerLeft:after {
-	background-image: linear-gradient(to right, black, rgba(255,255,255,0));
-}
-.headerRight:after {
-	background-image: linear-gradient(to left, black, rgba(255,255,255,0));
-}
-.logo {
-	position: relative;
-	display: block;
-	float: left;
-	margin: 8px;
-}
-.headerButton {
-	float: right;
-	position: relative;
-	top: 50%;
-	transform: translateY(-50%);
-	margin-right: 8%;
-	color: black;
-	text-decoration: none;
-}
-.headerButton:hover {
-	text-decoration: underline;
-}
-.headerButton:active {
-	text-decoration: underline;
-}
 
 /* events overlay */
 .overlay {
@@ -92,7 +49,7 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	font-size: 0.8em;
 	margin-left: auto;
 	margin-right: auto;
-	border: 1px solid black;
+	border: 1px solid;
 }
 .eventPopup:before {
 	content: "";
@@ -114,11 +71,11 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	padding: 4px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 2%;
-	margin-bottom: 2%;
+	margin-top: 4%;
+	margin-bottom: 4%;
 	border-radius: 3px;
 	border: none;
-	width: 96%;
+	width: 92%;
 	box-sizing: border-box;
 	background-color: white;
 	background-image: linear-gradient(#FFF, #AAA);
@@ -138,7 +95,6 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	margin-left: 1.25em;
 	font-family: 'Open Sans',sans-serif;
 	font-size: 1em;
-	font-weight: 300;
 	color: black;
 	background-color: #CCC;
 	border-radius: 6px;
@@ -150,7 +106,6 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	-ms-user-select: none;
 	user-select: none;
 	box-shadow: 2px 2px 5px #888888;
-	border: 1px solid black;
 }
 /* year navigation buttons */
 #yearButtons {
@@ -165,7 +120,7 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	padding: 0.3em 0 0.3em 0;
 	width: 8em;
 	cursor: pointer;
-	font-weight: 500;
+	font-weight: 400;
 	text-align: center;
 }
 .yearButton:active {
@@ -193,7 +148,7 @@ svg {position: absolute; display: block; top: 0; left: 0;}
 	position: relative;
 	padding: 10px;
 	cursor: pointer;
-	font-weight: 500;
+	font-weight: 400;
 }
 /*
 .menuButton:before {

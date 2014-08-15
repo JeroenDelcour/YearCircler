@@ -36,8 +36,9 @@ function init(wrapper, year) {
 }
 
 function drawIndicator(svg, centerX, centerY, radius, date) {
-	var text = drawSVGtext(centerX,centerY,date.getFullYear(),"black","end","sans-serif",0.1);
+	var text = drawSVGtext(centerX,centerY,date.getFullYear(),"black","middle","sans-serif",0.1);
 	text.setAttribute("font-size", style.indicator.fontSize);
+	text.setAttribute("alignment-baseline", "central");
 	svg.appendChild(text);
 }
 function buildOverlay(wrapper) {
@@ -54,7 +55,7 @@ function buildSVGelem(wrapper) {
 	svg.setAttributeNS(null, "width", "100%");
 	svg.setAttributeNS(null, "height", "100%");
 	svg.setAttributeNS(null, "viewBox", "0 0 100 100");
-	svg.id = "clock";
+	svg.id = "clockSVG";
 	wrapper.appendChild(svg);
 	return svg;
 }
@@ -137,7 +138,7 @@ var style = {
 	var newYearsMarkLength = 0.2;
 */
 	indicator: {
-		fontSize: 14 // relative to radius
+		fontSize: 27 // relative to radius
 	},
 	hand: {
 		color: "black",
@@ -341,15 +342,16 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 			var label = document.createElement('div');
 			label.innerHTML = events[i].name;
 			label.className = "eventLabel";
-			var divX = x;
+			if (progressTmp > 0.5) {
+				div.style.transform = "translateX(-100%)";
+				div.style.webkitTransform = "translateX(-100%)";
+				div.style.msTransform = "translateX(-100%)";
+				div.style.textAlign = "right";
+			}
 			div.style.left = x + "%";
 			div.className = "eventWrapper";
 			div.setAttribute("eventid", events[i].id);
 			div.setAttribute("arrayid", i);
-			if (progressTmp > 0.5) {
-				div.style.transform = "translateX(-100%)";
-				div.style.textAlign = "right";
-			}
 			div.appendChild(label);
 			overlay.appendChild(div);
 			var BBox = {"x": x, "y": y, "width": div.offsetWidth/window.innerWidth*100, "height": div.offsetHeight/window.innerHeight*100};

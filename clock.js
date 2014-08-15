@@ -125,7 +125,7 @@ function deleteEvent() {
 // Because a lot of things are scaled to the clock radius, their style needs to be set using JavaScript instead of CSS
 // TODO: move this to CSS using em to scale and make the SVG element's font-size attribute the only thing that needs to be set by JavaScript to scale to the clock radius
 var style = {
-	dontLookBack: true, // if true, prevents past events from being displayed
+	dontLookBack: false, // if true, prevents past events from being displayed
 
 	yearStartOffset: -.5*Math.PI,
 	
@@ -341,25 +341,16 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 			var label = document.createElement('div');
 			label.innerHTML = events[i].name;
 			label.className = "eventLabel";
+			var divX = x;
+			div.style.left = x + "%";
+			div.className = "eventWrapper";
+			div.setAttribute("eventid", events[i].id);
+			div.setAttribute("arrayid", i);
 			if (progressTmp > 0.5) {
-				var wrapper = document.createElement("div");
-				wrapper.className = "eventWrapper";
-				wrapper.style.cssFloat = "right";
-				wrapper.style.textAlign = "right";
-				wrapper.setAttribute("eventid", events[i].id);
-				wrapper.setAttribute("arrayid", i);
-				wrapper.appendChild(label);
-				var divX = 0;
-				div.style.width = x + "%";
-				div.appendChild(wrapper);
-			} else {
-				var divX = x;
-				div.style.left = x + "%";
-				div.className = "eventWrapper";
-				div.setAttribute("eventid", events[i].id);
-				div.setAttribute("arrayid", i);
-				div.appendChild(label);
+				div.style.transform = "translateX(-100%)";
+				div.style.textAlign = "right";
 			}
+			div.appendChild(label);
 			overlay.appendChild(div);
 			var BBox = {"x": x, "y": y, "width": div.offsetWidth/window.innerWidth*100, "height": div.offsetHeight/window.innerHeight*100};
 			if (events[i].midDate.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border

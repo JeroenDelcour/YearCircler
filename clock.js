@@ -18,9 +18,9 @@ function init(wrapper, year) {
 	var radius = 40;
 	
 	var svg = buildSVGelem(wrapper);
-	var defss = builddefsElem(svg);
+	var defs = buildDefsElem(svg);
 	
-	drawMonths(svg, defss, centerX, centerY, radius, daysInMonth, daysInYear);
+	drawMonths(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear);
 	var firstDayOfTheWeek = new Date(date.getFullYear(), 0, 1).getDay();
 	drawDays(svg, centerX, centerY, radius, daysInYear, firstDayOfTheWeek);
 	drawIndicator(svg, centerX, centerY, radius, date);
@@ -31,7 +31,7 @@ function init(wrapper, year) {
 	}
 	
 	var overlay = buildOverlay(wrapper);
-	drawEvents(svg, defss, centerX, centerY, radius, daysInMonth, daysInYear, date, now, overlay);
+	drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now, overlay);
 	buildEventPopups(now);
 }
 
@@ -60,11 +60,11 @@ function buildSVGelem(wrapper) {
 	return svg;
 }
 
-function builddefsElem(svg) {
-	var defss = document.createElement('defss');
-	defss.id = "defss";
-	svg.appendChild(defss);
-	return defss;
+function buildDefsElem(svg) {
+	var defs = document.createElement('defs');
+	defs.id = "defs";
+	svg.appendChild(defs);
+	return defs;
 }
 
 function buildEventPopups(date) {

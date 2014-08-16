@@ -8,8 +8,8 @@
 	<meta name="description" content="YearCircler is a yearly organizer to help you intuitively plan your import events for the year.">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
 	<link rel="shortcut icon" href="../images/favicon.ico">
-	<link href='http://www.yearcircler.com/header.css' rel='stylesheet' type='text/css'>
-	<link href='http://www.yearcircler.com/FAQ/FAQ.css' rel='stylesheet' type='text/css'>
+	<link href='../header.css' rel='stylesheet' type='text/css'>
+	<link href='FAQ.css' rel='stylesheet' type='text/css'>
 	<?php
 		$bday = new DateTime("1992-03-30");
 		$now = new DateTime();
@@ -18,20 +18,20 @@
 	?>
 </head>
 <body>
-<?php include_once("http://www.yearcircler.com/analyticstracking.php") ?>
+<?php // include_once("http://www.yearcircler.com/analyticstracking.php") ?>
 
 <div class="header">
 	<div class="headerLeft">
-		<a href="http://www.yearcircler.com/" class="headerButton">HOME</a>
+		<a href="../" class="headerButton">HOME</a>
 	</div>
 	<div class="headerRight">
-		<a href="http://www.yearcircler.com/FAQ/" class="headerButton">FAQ</a>
+		<a href="../FAQ/" class="headerButton">FAQ</a>
 	</div>
 </div>
 
 
 	<div id="wrapper">
-		<a href="http://www.yearcircler.com/"><div class="logoBig" alt="Year Circler - year planner"></div></a>
+		<a href="../"><div class="logoBig" alt="Year Circler - year planner"></div></a>
 		
 		<h2><span>THE ANNUAL ORGANIZER</span></h1>
 		
@@ -61,7 +61,7 @@
 <br/>
 <span>That's all you need to know to use YearCircler. Have fun!</span>
 <h3>Wait! I have more questions!</h3>
-<p>No worries, just drop me an e-mail at <a href="mailto:contact@yearcircler.com">contact@yearcircer.com</a> and I'll get back to you.</p>
+<p>No worries, just drop me an e-mail at <a href="mailto:contact@yearcircler.com">contact@yearcircler.com</a> and I'll get back to you.</p>
 
 		</div>
 	</div>

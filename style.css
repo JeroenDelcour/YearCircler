@@ -59,13 +59,28 @@ body {
 	margin-right: auto;
 	border: 1px solid;
 }
-.eventPopup:before {
+.up {
+	transform: translateY(-135%);
+	-ms-transform: translateY(-135%); /* IE 9 */
+    -webkit-transform: translateY(-135%); /* Chrome, Safari, Opera */
+}
+.up:before {
+	content: "";
+	position: absolute;
+	bottom: -4px;
+	left: 50%;
+	border-top: 4px solid black;
+	border-top-color: inherit; 
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent; 
+}
+.down:before {
 	content: "";
 	position: absolute;
 	top: -4px;
 	left: 50%;
 	border-bottom: 4px solid black;
-	border-top-color: inherit; 
+	border-bottom-color: inherit; 
 	border-left: 4px solid transparent;
 	border-right: 4px solid transparent; 
 }

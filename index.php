@@ -40,11 +40,10 @@
 
 <div class="header">
 	<div class="headerLeft">
-		<a href="http://192.168.1.120/year-clock/" class="logo"></a>
+		<a href="" class="logo"></a>
 	</div>
 	<div class="headerRight">
-		<a href="http://192.168.1.120/year-clock/about/" class="headerButton">ABOUT</a>
-		<a href="http://192.168.1.120/year-clock/" class="headerButton">HOME</a>
+		<a href="FAQ/" class="headerButton">FAQ</a>
 	</div>
 </div>
 

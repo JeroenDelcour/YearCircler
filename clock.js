@@ -75,13 +75,19 @@ function buildEventPopups(date) {
         eventWrappers[i].children[0].addEventListener('click', switchPopup, false); // make eventLabel clickable
 		
 		var div = document.createElement('div');
-		div.className = "eventPopup";
 		div.style.backgroundColor = colorOfTheMonth;
 		div.style.borderColor = colorOfTheMonth;
 		div.style.display = "none";
 		var dateDisplay = document.createElement('div');
 		var arrayid = eventWrappers[i].getAttribute("arrayid");
 		var event = events[arrayid];
+		var midDate = event.midDate;
+		if (midDate < new Date(date.getFullYear(),9,01) && midDate >= new Date(date.getFullYear(),06,01)
+		|| midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
+			div.className = "eventPopup up";
+		} else {
+			div.className = "eventPopup down";
+		}
 		dateDisplay.innerHTML = style.dayLabels[event.start.getDay()]+" "+event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()];
 		if (event.start - event.end != 0) {
 			dateDisplay.innerHTML += " - "+style.dayLabels[event.end.getDay()]+" "+event.end.getDate()+" "+style.monthsLabels[event.end.getMonth()];
@@ -275,6 +281,12 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 			name: "Welcome to YearCircler! Click this sample event to delete it",
 			start: new Date(),
 			end: new Date()
+		},
+		{
+			id: 2,
+			name: "First time here? Check out the FAQ",
+			start: new Date(date.getFullYear(),1,1),
+			end: new Date(date.getFullYear(),1,1)
 		}];
 		localStorage.setItem('events', JSON.stringify(events));
 	}

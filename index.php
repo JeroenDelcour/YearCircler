@@ -48,9 +48,12 @@
 	</div>
 </div>
 
-<div class="menuContainer" id="yearButtons"><div class="yearButton" id="prevYear">Previous year</div><div class="yearButton" id="nextYear">Next year</div></div>
-
 <?php include('addEventForm.php') ?>
+
+<div class="menuContainer" id="yearButtons">
+	<div class="yearButton" id="prevYear">Previous year</div>
+	<div class="yearButton" id="nextYear">Next year</div>
+</div>
 
 <script>
 	var year = new Date().getFullYear();

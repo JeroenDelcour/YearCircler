@@ -35,7 +35,7 @@ svg.setAttributeNS(null, "viewBox", "0 0 1000 1000");
 svg.id = "clockSVG";
 document.body.appendChild(svg);
 
-var defs = document.createElement('defs');
+var defs = document.createElementNS(svgNS,"defs");
 defs.id = "defs";
 svg.appendChild(defs);
 

@@ -18,7 +18,7 @@
 	?>
 </head>
 <body>
-<?php // include_once("http://www.yearcircler.com/analyticstracking.php") ?>
+<?php // include_once("../analyticstracking.php") ?>
 
 <div class="header">
 	<div class="headerLeft">

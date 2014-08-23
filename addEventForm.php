@@ -1,6 +1,6 @@
 <div class="menuContainer" id="menuContainer">
 <div class="menuButton" onClick="menuClick()">Add event</div>
-	<form class="insertFormHidden" id="addEventForm" onSubmit="addEvent();return false">
+	<form class="insertFormHidden" id="addEventForm" onSubmit="addEvent();event.preventDefault();">
 		<input type="text" name="name" id="name" autocomplete="off" placeholder="Event name" required/>
 		<br/>
 		<input type="text" name="start" id="addEventStart" class="datepicker" autocomplete="off" placeholder="Start date"  required/>

@@ -5,6 +5,8 @@
 	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
 	<meta name="author" content="Jeroen Delcour">
+	<meta name="description" content="YearCircler is a yearly organizer to help you intuitively plan your import events for the year.">
+	<meta property="og:image" content="http://www.yearcircler.com/images/logoBig.png"/>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 	<link rel="shortcut icon" href="images/favicon.ico">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>

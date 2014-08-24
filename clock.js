@@ -94,6 +94,12 @@ function buildEventPopups(date) {
 		}
 		dateDisplay.className = "dateDisplay";
 		div.appendChild(dateDisplay);
+		if (event.desc && event.desc != '') {
+			var desc = document.createElement('div');
+			desc.className = "eventDesc";
+			desc.innerHTML = event.desc;
+			div.appendChild(desc);
+		}
 		eventWrappers[i].appendChild(div);
 		var button = document.createElement('button');
 		button.innerHTML = "Delete event";
@@ -107,12 +113,18 @@ function switchPopup() {
 	switch(popup.style.display) {
 		case "none":
 			popup.style.display = "inline-block";
+			this.parentNode.style.zIndex = 100;
+			this.parentNode.style.textDecoration = 'underline';
 			break;
 		case "inline-block":
 			popup.style.display = "none";
+			this.parentNode.style.zIndex = 'auto';
+			this.parentNode.style.textDecoration = 'none';
 			break;
-		defsault:
+		default:
 			popup.style.display = "none";
+			this.parentNode.style.zIndex = 'auto';
+			this.parentNode.style.textDecoration = 'none';
 	}
 }
 		
@@ -294,18 +306,27 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 	var lr = [];
 	var ul = [];
 	var ur = [];
+	var dontLookBack;
+	if (dontLookBack = localStorage.getItem('dontLookBack')) {
+		if (dontLookBack === 'false') { dontLookBack = false; }
+		else if (dontLookBack === 'true') { dontLookBack = true; }
+	} else {
+		localStorage.setItem('dontLookBack', 'false');
+		dontLookBack = false;
+	}
 	for(i=0;i<events.length;i++) { // turn stringified dates back into Date objects
 		events[i].start = new Date(events[i].start);
 		events[i].end = new Date(events[i].end);
 		midDate = new Date((events[i].start.getTime() + events[i].end.getTime()) / 2);
 		events[i].midDate = midDate;
-		if (midDate < new Date(date.getFullYear(),9,01) && midDate >= new Date(date.getFullYear(),06,01)) {
+		if (dontLookBack && events[i].end < now) { continue; };
+		if (midDate < new Date(date.getFullYear(),9,1) && midDate >= new Date(date.getFullYear(),6,1)) {
 			ll.push(events[i]);
-		} else if (midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
+		} else if (midDate < new Date(date.getFullYear(),6,1) && midDate >= new Date(date.getFullYear(),3,1)) {
 			lr.push(events[i]);
-		} else if (midDate < new Date(date.getFullYear()+1,00,01) && midDate >= new Date(date.getFullYear(),9,01)) {
+		} else if (midDate < new Date(date.getFullYear()+1,0,1) && midDate >= new Date(date.getFullYear(),9,1)) {
 			ul.push(events[i]);
-		} else if (midDate < new Date(date.getFullYear(),03,01) && midDate >= new Date(date.getFullYear(),00,01)) {
+		} else if (midDate < new Date(date.getFullYear(),3,1) && midDate >= new Date(date.getFullYear(),0,1)) {
 			ur.push(events[i]);
 		}
 	}
@@ -323,9 +344,6 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		var progressStart = dateToTau(events[i].start.getMonth(), events[i].start.getDate(), daysInMonth, daysInYear);
 		var progressEnd = dateToTau(events[i].end.getMonth(), events[i].end.getDate(), daysInMonth, daysInYear);
 		var todayTau = dateToTau(now.getMonth(), now.getDate(), daysInMonth, daysInYear);
-		if (events[i].start.getFullYear() !== date.getFullYear() || (style.dontLookBack && now.getFullYear() == date.getFullYear() && progressEnd < todayTau)) {
-			continue;
-		}
 		if (progressEnd == progressStart) {// check whether it's a one-day or multiple-day event
 			// 1 day event
 			progressTmp = progressStart;
@@ -395,14 +413,14 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		//var BBox = div.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER!
 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 10) { // check if event sits in upper half of clock
+			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 9) { // check if event sits in upper half of clock
 				if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
 					var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
 					endY -= dY;
 					div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%"; + "%";
 					BBox.y -= dY;
 				}
-			} else if (events[i].start.getMonth() <= 9 && events[i].start.getMonth() >= 4 // if event sits in lower half
+			} else if (events[i].start.getMonth() <= 8 && events[i].start.getMonth() >= 4 // if event sits in lower half
 					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
 				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
 				endY += dY;

@@ -47,8 +47,8 @@ body {
 }
 .eventPopup {
 	position: relative;
-	z-index: 1;
 	min-width: 100px;
+	max-width: 300px;
 	display: inline-block;
 	text-align: left;
 	border-radius: 6px;
@@ -60,9 +60,9 @@ body {
 	border: 1px solid;
 }
 .up {
-	transform: translateY(-135%);
-	-ms-transform: translateY(-135%); /* IE 9 */
-    -webkit-transform: translateY(-135%); /* Chrome, Safari, Opera */
+	transform: translateY(calc(-100% - 2em));
+	-ms-transform: translateY(calc(-100% - 2em)); /* IE 9 */
+    -webkit-transform: translateY(calc(-100% - 2em)); /* Chrome, Safari, Opera */
 }
 .up:before {
 	content: "";
@@ -84,10 +84,16 @@ body {
 	border-left: 4px solid transparent;
 	border-right: 4px solid transparent; 
 }
-.eventPopup .dateDisplay {
+.eventPopup .dateDisplay, .eventPopup .eventDesc {
 	padding: 5px 10px 5px 10px;
 	border-bottom: 1px solid black;
+}
+.eventPopup .eventDesc {
+	word-wrap: break-word;
+}
+.eventPopup .dateDisplay {
 	white-space: nowrap;
+	text-align: center;
 }
 .eventPopup button {
 	display: block;
@@ -139,7 +145,6 @@ body {
 .yearButton {
 	position: relative;
 	float: left;
-	font-size: 0.8em;
 	padding: 0.3em 0 0.3em 0;
 	width: 8em;
 	cursor: pointer;
@@ -173,17 +178,24 @@ body {
 	cursor: pointer;
 	font-weight: 400;
 }
-/*
-.menuButton:before {
-	content: "v";
+/* options menu */
+#options {
 	position: absolute;
-	font-weight: 400;
-	font-size: 1.5em;
-	line-height: 0.7em;
-	left: 5px;
-	top: 3px;
+	bottom: 1.25em;
+	right: 1.25em;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }
-*/
+#options li {
+	position: relative;
+	float: left;
+	font-weight: 400;
+	margin: 0.3em;
+}
+#options li input, #options li label {
+	cursor: pointer;
+}
 
 /*	hamburger menu icon
 //	.menuButton:before {
@@ -210,7 +222,7 @@ body {
 	padding: 0px 15px 15px 15px;
 	width: 200px;
 }
-#addEventForm input {
+#addEventForm input, #addEventForm textarea {
 	padding: 4px;
 	border-radius: 3px;
 	border: none;
@@ -235,10 +247,10 @@ body {
 }
 .submitIdle:hover {
 	background-color: #AAA;
-};
+}
 .submitIdle:active {
 	background-color: #666;
-};
+}
 .submitWorking {
 	cursor: default;
 }

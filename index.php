@@ -56,18 +56,41 @@
 	<div class="yearButton" id="nextYear">Next year</div>
 </div>
 
+<ul class="menuContainer" id="options">
+<li>
+	<input type="checkbox" name="option" id="options_dontLookBack" value="dontLookBack" />
+	<label for="options_dontLookBack">Don't look back</label>
+</li>
+</ul>
+
 <script>
 	var year = new Date().getFullYear();
 	init(document.getElementById("clock"), year); // initialize clock, passing SVG and def elements names as arguments
 	
-	document.getElementById('yearButtons').style.backgroundColor = style.month.colors2[new Date().getMonth()];
+//	document.getElementById('yearButtons').style.backgroundColor = style.month.colors2[new Date().getMonth()];
+	var menuContainers = document.getElementsByClassName('menuContainer');
+	var colorOfTheMonth = style.month.colors2[new Date().getMonth()];
+	for (i=0; i<menuContainers.length; i++) {
+		menuContainers[i].style.backgroundColor = colorOfTheMonth;
+	}
+	if (localStorage.getItem("dontLookBack") === "true") {
+		document.getElementById("options_dontLookBack").checked = true;
+	}
 	
 	document.getElementById("nextYear").addEventListener("click", function(){
 		year++;
-		redrawClock(year);},false);
+		redrawClock(year);
+	},false);
 	document.getElementById("prevYear").addEventListener("click", function(){
 		year--;
-		redrawClock(year);},false);
+		redrawClock(year);
+	},false);
+	document.getElementById("options_dontLookBack").addEventListener("click", function() {
+		if (localStorage.getItem("dontLookBack") === 'false') { localStorage.setItem("dontLookBack", 'true') ;}
+		else if (localStorage.getItem("dontLookBack") === 'true') { localStorage.setItem("dontLookBack", 'false'); }
+		redrawClock(year);
+		console.log(events[3]);
+	},false);
 	
 	function redrawClock(year) {
 		var el = document.getElementById("clock");

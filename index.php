@@ -9,8 +9,8 @@
 	<meta property="og:image" content="http://www.yearcircler.com/images/logoBig.png"/>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 	<link rel="shortcut icon" href="images/favicon.ico">
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+	<script src="jquery-1.11.1.min.js"></script>
+	<script src="jquery-ui.min.js"></script>
 	<link href='style.css' rel='stylesheet' type='text/css'>
 	<link href='header.css' rel='stylesheet' type='text/css'>
 	<script src="clock.js"></script>

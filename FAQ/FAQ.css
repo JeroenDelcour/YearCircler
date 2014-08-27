@@ -85,3 +85,38 @@ h2 span {
 	display: block;
 	margin-top: 4em;
 }
+.thatsAllFolks {
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+.button {
+	position: relative;
+	margin-top: 1.25em;
+	margin-bottom: 1.25em;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #FFFF19;
+	border-radius: 6px;
+	font-weight: 400;
+	padding: 0.6em;
+	box-shadow: 0 2px 5px #888888;
+	text-align: center;
+	font-size: 1.5em;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 800;
+}
+.button:hover {
+	background-color: #FFD915;
+}
+.button:active {
+	background-color: #FFD915;
+	box-shadow: 0 0 0 #888;
+	transform: translateY(2px);
+	-ms-transform: translateY(2px);
+	-webkit-transform: translateY(2px);
+}
+.description a {
+	text-decoration: none;
+	color: black;
+}

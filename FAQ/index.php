@@ -59,7 +59,8 @@
 <h3>Help! My events disappear when I use a different browser or computer!</h3>
 <p>Currently, events are stored locally on the browser you used to create them using an HTML5 technology called WebStorage. This allows you to get started quickly without having to create an account. In the future, a simple account system will be added so you can access your events from anywhere.</p>
 <br/>
-<span>That's all you need to know to use YearCircler. Have fun!</span>
+<div class="thatsAllFolks">That's all you need to know to use YearCircler. Have fun!</div>
+<a href="/year-clock"><div class="button">GET STARTED</div></a>
 <h3>Wait! I have more questions!</h3>
 <p>No worries, just drop me an e-mail at <a href="mailto:contact@yearcircler.com">contact@yearcircler.com</a> and I'll get back to you.</p>
 

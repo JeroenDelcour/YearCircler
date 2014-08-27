@@ -5,7 +5,7 @@
 	<title>YearCircler - Intuitive calendar and year planner</title>
 	<meta charset="utf-8">
 	<meta name="author" content="Jeroen Delcour">
-	<meta name="description" content="YearCircler is a yearly organizer to help you intuitively plan your import events for the year.">
+	<meta name="description" content="Year Circler is an annual organizer which intuitively displays the year as a clock.">
 	<meta property="og:image" content="http://www.yearcircler.com/images/logoBig.png"/>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 	<link rel="shortcut icon" href="images/favicon.ico">
@@ -42,7 +42,7 @@
 
 <div class="header">
 	<div class="headerLeft">
-		<a href="" class="logo"></a>
+		<a href="" class="logo"><img src="images/logo.png" width="180" height="47" alt="Year Circler logo"/></a>
 	</div>
 	<div class="headerRight">
 		<a href="FAQ/" class="headerButton">FAQ</a>

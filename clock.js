@@ -394,7 +394,7 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		div.setAttribute("arrayid", i);
 		div.appendChild(label);
 		overlay.appendChild(div);
-		var BBox = {"x": x, "y": y, "width": div.offsetWidth/window.innerWidth*100, "height": div.offsetHeight/window.innerHeight*100};
+		var BBox = {"x": x, "y": y, "width": div.offsetWidth/overlay.offsetWidth*100, "height": div.offsetHeight/window.innerHeight*100};
 		if (events[i].midDate.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
 			if (BBox.y + BBox.height > march31Y) {
 				var dY = Math.abs(BBox.y + BBox.height - march31Y);
@@ -413,14 +413,28 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		//var BBox = div.getBBox();
 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER!
 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 9) { // check if event sits in upper half of clock
-				if (BBox.y > prevBBox.y - BBox.height && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move up so it doesn't anymore
-					var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
-					endY -= dY;
-					div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%"; + "%";
-					BBox.y -= dY;
+			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 9 // check if event sits in upper half of clock
+				&& events[i-1].start.getMonth() <= 3 || events[i-1].start.getMonth() >= 9) {// and check if previous event was also in upper half of clock
+				if (BBox.y > prevBBox.y - BBox.height) { // if overlapping y-coordinates
+					if (events[i].start.getMonth() >= 9) { // if in upper left
+						console.log(events[i].name);
+						for (j=1; i-j >= 0 && events[i-j].start >= 9; j++) { // for any previous event in upper left
+							console.log(BBox.x);
+							console.log(events[i-j].BBox.x);
+							console.log(events[i-j].BBox.width);
+							if (BBox.x < events[i-j].BBox.x + events[i-j].BBox.width && BBox.x + BBox.width > events[i-j].BBox.x) { // if overlapping x-coordinates
+								console.log(events[i-j].name);
+								var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
+								endY -= dY;
+								div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%"; + "%"; // move it
+								BBox.y -= dY;
+								break;
+							}
+						}
+					}
 				}
 			} else if (events[i].start.getMonth() <= 8 && events[i].start.getMonth() >= 4 // if event sits in lower half
+					&& events[i-1].start.getMonth() <= 8 && events[i-1].start.getMonth() >= 4// and if previous event also sits in lower half
 					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
 				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
 				endY += dY;

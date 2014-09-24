@@ -29,7 +29,6 @@ body {
     left:0;right:0; /* horizontal center */
 }
 /* events */
-.eventLine { stroke: black; stroke-width: 2; }
 .eventWrapper {
 	margin: 0;
 	padding: 0;

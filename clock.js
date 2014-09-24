@@ -30,9 +30,9 @@ function init(wrapper, year) {
 		drawHand(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
 	}
 	
-	var overlay = buildOverlay(wrapper);
-	drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now, overlay);
-	buildEventPopups(now);
+//	var overlay = buildOverlay(wrapper);
+	drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now);
+	buildEventPopups(now, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
 }
 
 function drawIndicator(svg, centerX, centerY, radius, date) {
@@ -41,10 +41,9 @@ function drawIndicator(svg, centerX, centerY, radius, date) {
 	text.setAttribute("alignment-baseline", "central");
 	svg.appendChild(text);
 }
-function buildOverlay(wrapper) {
+function buildOverlay() {
 	var overlay = document.createElement("div");
 	overlay.className = "overlay";
-	wrapper.appendChild(overlay);
 	return overlay;
 }
 
@@ -67,45 +66,57 @@ function buildDefsElem(svg) {
 	return defs;
 }
 
-function buildEventPopups(date) {
+function buildEventPopups(date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear) {
 	var colorOfTheMonth = style.month.colors2[date.getMonth()];
-	var eventWrappers = document.getElementsByClassName("eventWrapper"); // gets array of elements with the specified class name
+	var eventLines = document.getElementsByClassName("eventLine"); // gets array of elements with the specified class name
 	
-    for (var i=0;i<eventWrappers.length;i++){
-        eventWrappers[i].children[0].addEventListener('click', switchPopup, false); // make eventLabel clickable
-		
-		var div = document.createElement('div');
-		div.style.backgroundColor = colorOfTheMonth;
-		div.style.borderColor = colorOfTheMonth;
-		div.style.display = "none";
-		var dateDisplay = document.createElement('div');
-		var arrayid = eventWrappers[i].getAttribute("arrayid");
-		var event = events[arrayid];
-		var midDate = event.midDate;
-		if (midDate < new Date(date.getFullYear(),9,01) && midDate >= new Date(date.getFullYear(),06,01)
-		|| midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
-			div.className = "eventPopup up";
-		} else {
-			div.className = "eventPopup down";
-		}
-		dateDisplay.innerHTML = style.dayLabels[event.start.getDay()]+" "+event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()];
-		if (event.start - event.end != 0) {
-			dateDisplay.innerHTML += " - "+style.dayLabels[event.end.getDay()]+" "+event.end.getDate()+" "+style.monthsLabels[event.end.getMonth()];
-		}
-		dateDisplay.className = "dateDisplay";
-		div.appendChild(dateDisplay);
-		if (event.desc && event.desc != '') {
-			var desc = document.createElement('div');
-			desc.className = "eventDesc";
-			desc.innerHTML = event.desc;
-			div.appendChild(desc);
-		}
-		eventWrappers[i].appendChild(div);
-		var button = document.createElement('button');
-		button.innerHTML = "Delete event";
-		div.appendChild(button);
-		button.addEventListener('click', deleteEvent, false);
-    }
+    for (var i=0;i<eventLines.length;i++){
+		var eventLine = eventLines[i];
+        eventLines[i].addEventListener("click", 
+		   function(el){ eventPopup(eventLine.getAttribute("arrayid"), date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear); }
+		, false);
+	}
+}
+
+function eventPopup(i, date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear) {
+	var overlay = buildOverlay();
+	
+	var div = document.createElement('div');
+	div.style.backgroundColor = colorOfTheMonth;
+	div.style.borderColor = colorOfTheMonth;
+//	div.style.display = "none";
+	var dateDisplay = document.createElement('div');
+	var event = events[i];
+	var midDate = event.midDate;
+	var midTau = dateToTau(midDate.getMonth(), midDate.getDate(), daysInMonth, daysInYear);
+	var X = centerX + radius * Math.cos(midTau*2*Math.PI + style.yearStartOffset);
+	var Y = centerY + radius * Math.sin(midTau*2*Math.PI + style.yearStartOffset);
+	div.style.left = X + "%";
+	div.style.top = Y + "%";
+	if (midDate < new Date(date.getFullYear(),9,01) && midDate >= new Date(date.getFullYear(),06,01)
+	|| midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
+		div.className = "eventPopup up";
+	} else {
+		div.className = "eventPopup down";
+	}
+	dateDisplay.innerHTML = style.dayLabels[event.start.getDay()]+" "+event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()];
+	if (event.start - event.end != 0) {
+		dateDisplay.innerHTML += " - "+style.dayLabels[event.end.getDay()]+" "+event.end.getDate()+" "+style.monthsLabels[event.end.getMonth()];
+	}
+	dateDisplay.className = "dateDisplay";
+	div.appendChild(dateDisplay);
+	if (event.desc && event.desc != '') {
+		var desc = document.createElement('div');
+		desc.className = "eventDesc";
+		desc.innerHTML = event.desc;
+		div.appendChild(desc);
+	}
+	var button = document.createElement('button');
+	button.innerHTML = "Delete event";
+	div.appendChild(button);
+	button.addEventListener('click', deleteEvent, false);
+	overlay.appendChild(div);
+	wrapper.appendChild(overlay);
 }
 
 function switchPopup() {
@@ -185,9 +196,9 @@ var style = {
 		color: "black"
 	},
 	eventLine: {
-		thickness: 3,
-		margin: 0.2,
-		color: "#3333CC",
+		thickness: 2,
+		margin: 0.5,
+		color: "#111",
 		opacity: 0.8
 	},
 	monthsLabels: ['January', 'February', 'March', 'April',
@@ -304,10 +315,6 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		}];
 		localStorage.setItem('events', JSON.stringify(events));
 	}
-	var ll = [];
-	var lr = [];
-	var ul = [];
-	var ur = [];
 	var dontLookBack;
 	if (dontLookBack = localStorage.getItem('dontLookBack')) {
 		if (dontLookBack === 'false') { dontLookBack = false; }
@@ -327,11 +334,13 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		return b.duration - a.duration;	
 	});
 	for (i = 0; i < events.length; i++) {
+		if (dontLookBack && events[i].end < now) { continue; }
 		var progressStart = dateToTau(events[i].start.getMonth(), events[i].start.getDate(), daysInMonth, daysInYear);
 		var progressEnd = dateToTau(events[i].end.getMonth(), events[i].end.getDate(), daysInMonth, daysInYear);
 		var todayTau = dateToTau(now.getMonth(), now.getDate(), daysInMonth, daysInYear);
-		progressStart -= 0.25/daysInYear;
-		progressEnd += 0.25/daysInYear;
+		var midTau = dateToTau(events[i].midDate.getMonth(), events[i].midDate.getDate(), daysInMonth, daysInYear);
+		progressStart -= 0.5/daysInYear;
+		progressEnd += 0.5/daysInYear;
 		var blacklist = [];
 		for (var j = i - 1; j >= 0; j--) { // check if an event is already occupying this spot. If so, add it's level to the blacklist.
 			if (events[i].start < events[j].end && events[i].end > events[j].start) {
@@ -347,6 +356,8 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 		var arc = drawSVGarc(centerX,centerY,radius + (style.eventLine.margin + style.eventLine.thickness) * events[i].level,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
 		arc.setAttribute("fill", "none");
 		arc.setAttribute("stroke-opacity", style.eventLine.opacity);
+		arc.setAttribute("arrayid", i);
+		arc.setAttribute("class", "eventLine");
 		svg.appendChild(arc);
 		var progressTmp = (progressStart+progressEnd)/2;
 	}

@@ -44,6 +44,33 @@ body {
 .eventLabel:hover {
 	text-decoration: underline;
 }
+.eventLine {
+	opacity: 0.6;
+}
+.eventLine:hover {
+	opacity: 0.8;
+}
+#eventDisplay {
+	position: relative;
+	left: 50%;
+	top: 50%;
+	width: 67%;
+	height: 67%;
+	border-radius: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	-ms-transform: translateY(-50%) translateX(-50%); /* IE 9 */
+    -webkit-transform: translateY(-50%) translateX(-50%); /* Chrome, Safari, Opera */
+	
+	display: table;
+	text-align: center;
+	font-size: 150%;
+	background-color: white;
+}
+#eventDisplay p {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 0;
+}
 .eventPopup {
 	position: relative;
 	min-width: 100px;

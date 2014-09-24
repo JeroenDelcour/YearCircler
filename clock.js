@@ -32,8 +32,41 @@ function init(wrapper, year) {
 	
 //	var overlay = buildOverlay(wrapper);
 	drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now);
-	buildEventPopups(now, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
+//	buildEventPopups(now, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
+	setEventPopups(now, wrapper, daysInMonth, daysInYear);
 }
+
+function setEventPopups(now, SVGel, daysInMonth, daysInYear) {
+	var eventLines = document.getElementsByClassName("eventLine"); // gets array of elements with the specified class name
+	
+    for (var i=0;i<eventLines.length;i++){
+        eventLines[i].addEventListener("click", 
+			function(){
+				openPopup(this, SVGel, daysInMonth, daysInYear);
+			}
+		, false);
+	}
+}
+
+function openPopup(origin, SVGel, daysInMonth, daysInYear) {
+	var event = events[origin.getAttribute("arrayid")];
+	origin.style.opacity = 1;
+	
+	var overlay = buildOverlay(); // overlay
+	SVGel.appendChild(overlay);
+	overlay.addEventListener("click",
+		function() {
+			overlay.remove();
+			origin.removeAttribute("style");
+		}
+	, false);
+	
+	var eventDisplay = document.createElement("div");
+	eventDisplay.id = "eventDisplay";
+	eventDisplay.innerHTML = "<p>" + event.name + "<br/>" + event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()]+" ("+style.dayLabels[event.start.getDay()]+")<br/>"+event.desc+"</p>";
+	overlay.appendChild(eventDisplay);
+}
+
 
 function drawIndicator(svg, centerX, centerY, radius, date) {
 	var text = drawSVGtext(centerX,centerY,date.getFullYear(),"black","middle","sans-serif",0.1);
@@ -200,10 +233,9 @@ var style = {
 		color: "black"
 	},
 	eventLine: {
-		thickness: 2,
-		margin: 0.5,
-		color: "#111",
-		opacity: 0.8
+		thickness: 3,
+		margin: 0.2,
+		color: "blue"
 	},
 	monthsLabels: ['January', 'February', 'March', 'April',
 						 'May', 'June', 'July', 'August', 'September',

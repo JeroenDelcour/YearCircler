@@ -73,23 +73,27 @@ function buildEventPopups(date, wrapper, centerX, centerY, radius, daysInMonth, 
     for (var i=0;i<eventLines.length;i++){
 		var eventLine = eventLines[i];
         eventLines[i].addEventListener("click", 
-		   function(el){ eventPopup(eventLine.getAttribute("arrayid"), date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear); }
+			function(){
+				eventPopup(this.getAttribute("arrayid"), date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
+			}
 		, false);
 	}
 }
 
 function eventPopup(i, date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear) {
+	
 	var overlay = buildOverlay();
 	
 	var div = document.createElement('div');
 	div.style.backgroundColor = colorOfTheMonth;
 	div.style.borderColor = colorOfTheMonth;
-//	div.style.display = "none";
+	div.style.display = "inline-block";
 	var dateDisplay = document.createElement('div');
 	var event = events[i];
 	var midDate = event.midDate;
 	var midTau = dateToTau(midDate.getMonth(), midDate.getDate(), daysInMonth, daysInYear);
 	var X = centerX + radius * Math.cos(midTau*2*Math.PI + style.yearStartOffset);
+	console.log(X);
 	var Y = centerY + radius * Math.sin(midTau*2*Math.PI + style.yearStartOffset);
 	div.style.left = X + "%";
 	div.style.top = Y + "%";

@@ -57,11 +57,14 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	border: 1px solid;
+	transform: translateX(-50%);
+	-ms-transform: translateX(-50%); /* IE 9 */
+    -webkit-transform: translateX(-50%); /* Chrome, Safari, Opera */
 }
 .up {
-	transform: translateY(calc(-100% - 2em));
-	-ms-transform: translateY(calc(-100% - 2em)); /* IE 9 */
-    -webkit-transform: translateY(calc(-100% - 2em)); /* Chrome, Safari, Opera */
+	transform: translateY(calc(-100% - 2em)) translateX(-50%);
+	-ms-transform: translateY(calc(-100% - 2em)) translateX(-50%); /* IE 9 */
+    -webkit-transform: translateY(calc(-100% - 2em)) translateX(-50%); /* Chrome, Safari, Opera */
 }
 .up:before {
 	content: "";

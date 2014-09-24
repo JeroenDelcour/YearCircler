@@ -41,7 +41,7 @@
 			var events = JSON.parse(localStorage.getItem('events'));
 		}
 		
-		var id;
+		var id; // generate a unique ID
 		for (id=1;id<10000;id++) {
 			if (!events.some(function (el) { return el.id == id; })) {
 				break;

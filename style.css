@@ -54,8 +54,8 @@ body {
 	position: relative;
 	left: 50%;
 	top: 50%;
-	width: 67%;
-	height: 67%;
+	width: 62%;
+	height: 62%;
 	border-radius: 50%;
 	transform: translateY(-50%) translateX(-50%);
 	-ms-transform: translateY(-50%) translateX(-50%); /* IE 9 */
@@ -63,8 +63,9 @@ body {
 	
 	display: table;
 	text-align: center;
-	font-size: 150%;
+	font-size: 1.5em;
 	background-color: white;
+	border: 1px solid blue;
 }
 #eventDisplay p {
 	display: table-cell;

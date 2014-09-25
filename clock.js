@@ -233,7 +233,7 @@ var style = {
 		color: "black"
 	},
 	eventLine: {
-		thickness: 3,
+		thickness: 9,
 		margin: 0.2,
 		color: "blue"
 	},

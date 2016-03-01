@@ -29,44 +29,7 @@ function init(wrapper, year) {
 	if (date.getFullYear() === now.getFullYear()) {
 		drawHand(svg, centerX, centerY, radius, daysInMonth, daysInYear, now);
 	}
-	
-//	var overlay = buildOverlay(wrapper);
-	// drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now);
-//	buildEventPopups(now, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
-	// setEventPopups(now, wrapper, daysInMonth, daysInYear);
 }
-
-// function setEventPopups(now, SVGel, daysInMonth, daysInYear) {
-// 	var eventLines = document.getElementsByClassName("eventLine"); // gets array of elements with the specified class name
-	
-//     for (var i=0;i<eventLines.length;i++){
-//         eventLines[i].addEventListener("click", 
-// 			function(){
-// 				openPopup(this, SVGel, daysInMonth, daysInYear);
-// 			}
-// 		, false);
-// 	}
-// }
-
-// function openPopup(origin, SVGel, daysInMonth, daysInYear) {
-// 	var event = events[origin.getAttribute("arrayid")];
-// 	origin.style.opacity = 1;
-	
-// 	var overlay = buildOverlay(); // overlay
-// 	SVGel.appendChild(overlay);
-// 	overlay.addEventListener("click",
-// 		function() {
-// 			overlay.remove();
-// 			origin.removeAttribute("style");
-// 		}
-// 	, false);
-	
-// 	var eventDisplay = document.createElement("div");
-// 	eventDisplay.id = "eventDisplay";
-// 	eventDisplay.innerHTML = "<p>" + event.name + "<br/>" + event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()]+" ("+style.dayLabels[event.start.getDay()]+")<br/>"+event.desc+"</p>";
-// 	overlay.appendChild(eventDisplay);
-// }
-
 
 function drawIndicator(svg, centerX, centerY, radius, date) {
 	var text = drawSVGtext(centerX,centerY,date.getFullYear(),"black","middle","sans-serif",0.1);
@@ -74,11 +37,6 @@ function drawIndicator(svg, centerX, centerY, radius, date) {
 	text.setAttribute("alignment-baseline", "central");
 	svg.appendChild(text);
 }
-// function buildOverlay() {
-// 	var overlay = document.createElement("div");
-// 	overlay.className = "overlay";
-// 	return overlay;
-// }
 
 function buildSVGelem(wrapper) {
 	var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -99,110 +57,13 @@ function buildDefsElem(svg) {
 	return defs;
 }
 
-// function buildEventPopups(date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear) {
-// 	var colorOfTheMonth = style.month.colors2[date.getMonth()];
-// 	var eventLines = document.getElementsByClassName("eventLine"); // gets array of elements with the specified class name
-	
-//     for (var i=0;i<eventLines.length;i++){
-// 		var eventLine = eventLines[i];
-//         eventLines[i].addEventListener("click", 
-// 			function(){
-// 				eventPopup(this.getAttribute("arrayid"), date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear);
-// 			}
-// 		, false);
-// 	}
-// }
-
-// function eventPopup(i, date, wrapper, centerX, centerY, radius, daysInMonth, daysInYear) {
-	
-// 	var overlay = buildOverlay();
-	
-// 	var div = document.createElement('div');
-// 	div.style.backgroundColor = colorOfTheMonth;
-// 	div.style.borderColor = colorOfTheMonth;
-// 	div.style.display = "inline-block";
-// 	var dateDisplay = document.createElement('div');
-// 	var event = events[i];
-// 	var midDate = event.midDate;
-// 	var midTau = dateToTau(midDate.getMonth(), midDate.getDate(), daysInMonth, daysInYear);
-// 	var X = centerX + radius * Math.cos(midTau*2*Math.PI + style.yearStartOffset);
-// 	console.log(X);
-// 	var Y = centerY + radius * Math.sin(midTau*2*Math.PI + style.yearStartOffset);
-// 	div.style.left = X + "%";
-// 	div.style.top = Y + "%";
-// 	if (midDate < new Date(date.getFullYear(),9,01) && midDate >= new Date(date.getFullYear(),06,01)
-// 	|| midDate < new Date(date.getFullYear(),06,01) && midDate >= new Date(date.getFullYear(),03,01)) {
-// 		div.className = "eventPopup up";
-// 	} else {
-// 		div.className = "eventPopup down";
-// 	}
-// 	dateDisplay.innerHTML = style.dayLabels[event.start.getDay()]+" "+event.start.getDate()+" "+style.monthsLabels[event.start.getMonth()];
-// 	if (event.start - event.end != 0) {
-// 		dateDisplay.innerHTML += " - "+style.dayLabels[event.end.getDay()]+" "+event.end.getDate()+" "+style.monthsLabels[event.end.getMonth()];
-// 	}
-// 	dateDisplay.className = "dateDisplay";
-// 	div.appendChild(dateDisplay);
-// 	if (event.desc && event.desc != '') {
-// 		var desc = document.createElement('div');
-// 		desc.className = "eventDesc";
-// 		desc.innerHTML = event.desc;
-// 		div.appendChild(desc);
-// 	}
-// 	var button = document.createElement('button');
-// 	button.innerHTML = "Delete event";
-// 	div.appendChild(button);
-// 	button.addEventListener('click', deleteEvent, false);
-// 	overlay.appendChild(div);
-// 	wrapper.appendChild(overlay);
-// }
-
-// function switchPopup() {
-// 	popup = this.parentNode.children[1];
-// 	switch(popup.style.display) {
-// 		case "none":
-// 			popup.style.display = "inline-block";
-// 			this.parentNode.style.zIndex = 100;
-// 			this.parentNode.style.textDecoration = 'underline';
-// 			break;
-// 		case "inline-block":
-// 			popup.style.display = "none";
-// 			this.parentNode.style.zIndex = 'auto';
-// 			this.parentNode.style.textDecoration = 'none';
-// 			break;
-// 		default:
-// 			popup.style.display = "none";
-// 			this.parentNode.style.zIndex = 'auto';
-// 			this.parentNode.style.textDecoration = 'none';
-// 	}
-// }
-		
-// function deleteEvent() {
-// 	var events = JSON.parse(localStorage.getItem('events'));
-// 	var eventName = this.parentNode.parentNode.children[0].innerHTML;
-// 	var eventid = this.parentNode.parentNode.getAttribute("eventid");
-// 	if (confirm("Delete event \""+eventName+"\"?")) {
-// 		newArray = events.filter(function (el) {
-// 			return el.id != eventid;
-// 	});
-// 	localStorage.setItem('events', JSON.stringify(newArray));
-// 	redrawClock(year);	
-// 	}
-// }
-
 // Because a lot of things are scaled to the clock radius, their style needs to be set using JavaScript instead of CSS
 // TODO: move this to CSS using em to scale and make the SVG element's font-size attribute the only thing that needs to be set by JavaScript to scale to the clock radius
 var style = {
 	dontLookBack: false, // if true, prevents past events from being displayed
 
 	yearStartOffset: -.5*Math.PI,
-	
-/*	var monthMarkColor = "white";
-	var monthMarkThickness = 2;
-	var monthMarkLength = .1; // relative to radius
-	var newYearsMarkColor = "black";
-	var newYearsMarkThickness = 4;
-	var newYearsMarkLength = 0.2;
-*/
+
 	indicator: {
 		fontSize: 27 // relative to radius
 	},
@@ -332,170 +193,6 @@ function drawHand (svg, centerX, centerY, radius, daysInMonth, daysInYear, date)
 	line.setAttribute("stroke-linecap","round");
 	svg.appendChild(line);
 }
-
-// function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear, date, now, overlay) {
-// 	if (localStorage.getItem('events')) {
-// 		events = JSON.parse(localStorage.getItem('events'));
-// 	} else {
-// 		events = [{
-// 			id: 1,
-// 			name: "Welcome to YearCircler! Click this sample event to delete it",
-// 			start: new Date(),
-// 			end: new Date()
-// 		},
-// 		{
-// 			id: 2,
-// 			name: "First time here? Check out the FAQ",
-// 			start: new Date(date.getFullYear(),1,1),
-// 			end: new Date(date.getFullYear(),1,1)
-// 		}];
-// 		localStorage.setItem('events', JSON.stringify(events));
-// 	}
-// 	var dontLookBack;
-// 	if (dontLookBack = localStorage.getItem('dontLookBack')) {
-// 		if (dontLookBack === 'false') { dontLookBack = false; }
-// 		else if (dontLookBack === 'true') { dontLookBack = true; }
-// 	} else {
-// 		localStorage.setItem('dontLookBack', 'false');
-// 		dontLookBack = false;
-// 	}
-// 	for (i = 0; i < events.length; i++) { // turn stringified dates back into Date objects
-// 		events[i].start = new Date(events[i].start);
-// 		events[i].end = new Date(events[i].end);
-// 		midDate = new Date((events[i].start.getTime() + events[i].end.getTime()) / 2);
-// 		events[i].midDate = midDate;
-// 		events[i].duration = events[i].end - events[i].start;
-// 	}
-// 	events.sort(function(a, b) { // sort events by duration
-// 		return b.duration - a.duration;	
-// 	});
-// 	for (i = 0; i < events.length; i++) {
-// 		if (dontLookBack && events[i].end < now) { continue; }
-// 		var progressStart = dateToTau(events[i].start.getMonth(), events[i].start.getDate(), daysInMonth, daysInYear);
-// 		var progressEnd = dateToTau(events[i].end.getMonth(), events[i].end.getDate(), daysInMonth, daysInYear);
-// 		var todayTau = dateToTau(now.getMonth(), now.getDate(), daysInMonth, daysInYear);
-// 		var midTau = dateToTau(events[i].midDate.getMonth(), events[i].midDate.getDate(), daysInMonth, daysInYear);
-// 		progressStart -= 0.5/daysInYear;
-// 		progressEnd += 0.5/daysInYear;
-// 		var blacklist = [];
-// 		for (var j = i - 1; j >= 0; j--) { // check if an event is already occupying this spot. If so, add it's level to the blacklist.
-// 			if (events[i].start < events[j].end && events[i].end > events[j].start) {
-// 				blacklist.push(events[j].level);
-// 			}
-// 		}
-// 		for (var level = 1; level < 10000; level++) {
-// 			if (!blacklist.some(function (el) { return el == level; })) {
-// 				events[i].level = level;
-// 				break;
-// 			}
-// 		}
-// 		if (progressEnd == progressStart) {// check whether it's a one-day or multiple-day event
-// 			// 1 day event
-// 			progressTmp = progressStart;
-// 		} else {
-// 			// multiple day event
-// 			progressStart -= 0.25/daysInYear;
-// 			progressEnd += 0.25/daysInYear;
-// 			// draw segment
-// 			var arc = drawSVGarc(centerX,centerY,radius*1.01,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
-// 			arc.setAttribute("fill", "none");
-// 			svg.appendChild(arc);
-// 			var progressTmp = (progressStart+progressEnd)/2;
-// 		};
-// 		// calculate line start and end points
-// 		var startX = centerX + Math.cos(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.01;
-// 		var startY = centerY + Math.sin(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.01;
-// 		var endX = centerX + Math.cos(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.05;
-// 		var endY = centerY + Math.sin(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.05;
-// 		// draw text
-// 		var x = endX;
-// 		var y = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI));
-// 	//	y -= 10 + 10 * (Math.cos(progressTmp*2*Math.PI));
-		
-// 		/* create div structure as such:
-// 		<div> // anonymous div to align names correctly in the left half of the clock
-// 			<div class="eventWrapper">
-// 				<div class="eventLabel">[event name goes here]</div>
-// 			</div>
-// 		</div>
-// 		*/
-		
-// 		var div = document.createElement("div");
-// 		div.style.position = "absolute";
-// 		div.style.top = y+"%";
-// 		events[i].el = div;
-// 		var label = document.createElement('div');
-// 		label.innerHTML = events[i].name;
-// 		label.className = "eventLabel";
-// 		if (progressTmp > 0.5) {
-// 			div.style.transform = "translateX(-100%)";
-// 			div.style.webkitTransform = "translateX(-100%)";
-// 			div.style.msTransform = "translateX(-100%)";
-// 			div.style.textAlign = "right";
-// 		}
-// 		div.style.left = x + "%";
-// 		div.className = "eventWrapper";
-// 		div.setAttribute("eventid", events[i].id);
-// 		div.setAttribute("arrayid", i);
-// 		div.appendChild(label);
-// 		overlay.appendChild(div);
-// 		var BBox = {"x": x, "y": y, "width": div.offsetWidth/overlay.offsetWidth*100, "height": div.offsetHeight/window.innerHeight*100};
-// 		if (events[i].midDate.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
-// 			if (BBox.y + BBox.height > march31Y) {
-// 				var dY = Math.abs(BBox.y + BBox.height - march31Y);
-// 				endY -= dY;
-// 				div.style.top = endY + "%";
-// 				BBox.y -= dY;
-// 			}
-// 		}
-// 		else if (events[i].midDate.getMonth() >= 10 && BBox.y + BBox.height > october1Y) { // if in upper left quarter, make sure it doesn't overlap with events in the lower left quarter around the september-october border
-// 			var dY = Math.abs(BBox.y + BBox.height - october1Y);
-// 			endY -= dY;
-// 			div.style.top = endY + "%";
-// 			BBox.y -= dY;
-// 		}
-		
-// 		//var BBox = div.getBBox();
-// 		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER!
-// 			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
-// 			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 9 // check if event sits in upper half of clock
-// 				&& events[i-1].start.getMonth() <= 3 || events[i-1].start.getMonth() >= 9) {// and check if previous event was also in upper half of clock
-// 				if (BBox.y > prevBBox.y - BBox.height) { // if overlapping y-coordinates
-// 					if (events[i].start.getMonth() >= 9) { // if in upper left
-// 						console.log(events[i].name);
-// 						for (j=1; i-j >= 0 && events[i-j].start >= 9; j++) { // for any previous event in upper left
-// 							console.log(BBox.x);
-// 							console.log(events[i-j].BBox.x);
-// 							console.log(events[i-j].BBox.width);
-// 							if (BBox.x < events[i-j].BBox.x + events[i-j].BBox.width && BBox.x + BBox.width > events[i-j].BBox.x) { // if overlapping x-coordinates
-// 								console.log(events[i-j].name);
-// 								var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
-// 								endY -= dY;
-// 								div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%"; + "%"; // move it
-// 								BBox.y -= dY;
-// 								break;
-// 							}
-// 						}
-// 					}
-// 				}
-// 			} else if (events[i].start.getMonth() <= 8 && events[i].start.getMonth() >= 4 // if event sits in lower half
-// 					&& events[i-1].start.getMonth() <= 8 && events[i-1].start.getMonth() >= 4// and if previous event also sits in lower half
-// 					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
-// 				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
-// 				endY += dY;
-// 				div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%";
-// 				BBox.y += dY;
-// 			}
-// 		}
-// 		var arc = drawSVGarc(centerX,centerY,radius + (style.eventLine.margin + style.eventLine.thickness) * events[i].level,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
-// 		arc.setAttribute("fill", "none");
-// 		arc.setAttribute("stroke-opacity", style.eventLine.opacity);
-// 		arc.setAttribute("arrayid", i);
-// 		arc.setAttribute("class", "eventLine");
-// 		svg.appendChild(arc);
-// 		var progressTmp = (progressStart+progressEnd)/2;
-// 	}
-// }
 
 //////////////////////
 // helper functions //

@@ -387,6 +387,102 @@ function drawEvents(svg, defs, centerX, centerY, radius, daysInMonth, daysInYear
 			if (!blacklist.some(function (el) { return el == level; })) {
 				events[i].level = level;
 				break;
+		if (progressEnd == progressStart) {// check whether it's a one-day or multiple-day event
+			// 1 day event
+			progressTmp = progressStart;
+		} else {
+			// multiple day event
+			progressStart -= 0.25/daysInYear;
+			progressEnd += 0.25/daysInYear;
+			// draw segment
+			var arc = drawSVGarc(centerX,centerY,radius*1.01,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
+			arc.setAttribute("fill", "none");
+			svg.appendChild(arc);
+			var progressTmp = (progressStart+progressEnd)/2;
+		};
+		// calculate line start and end points
+		var startX = centerX + Math.cos(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.01;
+		var startY = centerY + Math.sin(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.01;
+		var endX = centerX + Math.cos(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.05;
+		var endY = centerY + Math.sin(progressTmp*2*Math.PI+style.yearStartOffset) * radius * 1.05;
+		// draw text
+		var x = endX;
+		var y = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI));
+	//	y -= 10 + 10 * (Math.cos(progressTmp*2*Math.PI));
+		
+		/* create div structure as such:
+		<div> // anonymous div to align names correctly in the left half of the clock
+			<div class="eventWrapper">
+				<div class="eventLabel">[event name goes here]</div>
+			</div>
+		</div>
+		*/
+		
+		var div = document.createElement("div");
+		div.style.position = "absolute";
+		div.style.top = y+"%";
+		events[i].el = div;
+		var label = document.createElement('div');
+		label.innerHTML = events[i].name;
+		label.className = "eventLabel";
+		if (progressTmp > 0.5) {
+			div.style.transform = "translateX(-100%)";
+			div.style.webkitTransform = "translateX(-100%)";
+			div.style.msTransform = "translateX(-100%)";
+			div.style.textAlign = "right";
+		}
+		div.style.left = x + "%";
+		div.className = "eventWrapper";
+		div.setAttribute("eventid", events[i].id);
+		div.setAttribute("arrayid", i);
+		div.appendChild(label);
+		overlay.appendChild(div);
+		var BBox = {"x": x, "y": y, "width": div.offsetWidth/overlay.offsetWidth*100, "height": div.offsetHeight/window.innerHeight*100};
+		if (events[i].midDate.getMonth() <= 3) { // if in upper right quarter, make sure it doesn't overlap with events in the lower right quarter around the march-april border
+			if (BBox.y + BBox.height > march31Y) {
+				var dY = Math.abs(BBox.y + BBox.height - march31Y);
+				endY -= dY;
+				div.style.top = endY + "%";
+				BBox.y -= dY;
+			}
+		}
+		else if (events[i].midDate.getMonth() >= 10 && BBox.y + BBox.height > october1Y) { // if in upper left quarter, make sure it doesn't overlap with events in the lower left quarter around the september-october border
+			var dY = Math.abs(BBox.y + BBox.height - october1Y);
+			endY -= dY;
+			div.style.top = endY + "%";
+			BBox.y -= dY;
+		}
+		
+		//var BBox = div.getBBox();
+		if (i > 0 && events[i-1].BBox) { // check for overlapping event names & adjust position if needed (also for end point of the line). DEPENDS ON CORRECT ARRAY ORDER!
+			var prevBBox = events[i-1].BBox; // get bounding box of previous event name
+			if (events[i].start.getMonth() <= 3 || events[i].start.getMonth() >= 9 // check if event sits in upper half of clock
+				&& events[i-1].start.getMonth() <= 3 || events[i-1].start.getMonth() >= 9) {// and check if previous event was also in upper half of clock
+				if (BBox.y > prevBBox.y - BBox.height) { // if overlapping y-coordinates
+					if (events[i].start.getMonth() >= 9) { // if in upper left
+						console.log(events[i].name);
+						for (j=1; i-j >= 0 && events[i-j].start >= 9; j++) { // for any previous event in upper left
+							console.log(BBox.x);
+							console.log(events[i-j].BBox.x);
+							console.log(events[i-j].BBox.width);
+							if (BBox.x < events[i-j].BBox.x + events[i-j].BBox.width && BBox.x + BBox.width > events[i-j].BBox.x) { // if overlapping x-coordinates
+								console.log(events[i-j].name);
+								var dY = Math.abs(BBox.y + BBox.height - prevBBox.y);
+								endY -= dY;
+								div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%"; + "%"; // move it
+								BBox.y -= dY;
+								break;
+							}
+						}
+					}
+				}
+			} else if (events[i].start.getMonth() <= 8 && events[i].start.getMonth() >= 4 // if event sits in lower half
+					&& events[i-1].start.getMonth() <= 8 && events[i-1].start.getMonth() >= 4// and if previous event also sits in lower half
+					&& BBox.y - BBox.height < prevBBox.y && BBox.x < prevBBox.x + prevBBox.width  && BBox.x + BBox.width  > prevBBox.x) { // if overlapping with previous event, move down so it doesn't anymore
+				var dY = Math.abs(BBox.y - BBox.height - prevBBox.y);
+				endY += dY;
+				div.style.top = endY - 2 - 2 * (Math.cos(progressTmp*2*Math.PI)) + "%";
+				BBox.y += dY;
 			}
 		}
 		var arc = drawSVGarc(centerX,centerY,radius + (style.eventLine.margin + style.eventLine.thickness) * events[i].level,progressStart,progressEnd,style.eventLine.thickness,style.eventLine.color);
